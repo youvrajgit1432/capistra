@@ -1,19 +1,9 @@
 <?php
 // formhandle.php
 
-// Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "capistra";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Database connection (central Capistra bootstrap)
+require_once dirname(__DIR__, 2) . '/config/app.php';
+$conn = capistra_mysqli();
 
 // Function to sanitize input data
 function sanitizeInput($data) {

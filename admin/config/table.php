@@ -1,11 +1,7 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";  // Fixed typo in "$pasword"
-$db = "capistra";
-
-// Establish database connection
-$conn = mysqli_connect($host, $username, $password, $db);
+// Establish database connection via the central Capistra bootstrap.
+require_once dirname(__DIR__, 2) . '/config/app.php';
+$conn = capistra_mysqli();
 
 if ($conn) {
     echo "<h1>Database connection success........ </h1>";

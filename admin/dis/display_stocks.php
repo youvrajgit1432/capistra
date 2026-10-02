@@ -1,10 +1,8 @@
 <?php
 // display_stocks.php
-$conn = new mysqli("localhost", "root", "", "capistra");
-
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
-}
+// Central Capistra database bootstrap (no hard-coded credentials).
+require_once dirname(__DIR__, 2) . '/config/app.php';
+$conn = capistra_mysqli();
 
 // Check if table exists and has data
 $tableCheck = $conn->query("SELECT 1 FROM stock_prices LIMIT 1");

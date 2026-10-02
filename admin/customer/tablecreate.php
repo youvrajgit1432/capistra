@@ -1,17 +1,7 @@
 <?php
-// Database connection parameters
-$servername = "localhost";  // or your database server
-$username = "root";         // your database username
-$password = "";             // your database password
-$dbname = "capistra";  // your database name
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Database connection via the central Capistra bootstrap.
+require_once dirname(__DIR__, 2) . '/config/app.php';
+$conn = capistra_mysqli();
 
 // SQL Queries to create tables
 $sql1 = "

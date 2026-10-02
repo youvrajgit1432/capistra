@@ -3,6 +3,7 @@
 
 // Include Composer autoloader
 require_once __DIR__ . '/../../config/autoload.php';
+require_once __DIR__ . '/../lib/admin.php';
 
 // Handle PDF Export
 if (isset($_GET['export_pdf'])) {
@@ -228,6 +229,7 @@ if (isset($_POST['add_expense'])) {
     $date = $_POST['date'];
     $amount = $_POST['amount'];
     $remarks = $_POST['remarks'];
+    $financialAccountId = (int) ($_POST['financial_account_id'] ?? 0);
 
     // File upload handling
     if ($_FILES['bill_file']['error'] === UPLOAD_ERR_OK) {
@@ -262,9 +264,10 @@ if (isset($_POST['add_expense'])) {
             // Move the uploaded file
             if (move_uploaded_file($file_tmp, $target_file)) {
                 // Insert into the database
-                $query = "INSERT INTO expenses (category, date, amount, bill_file,remarks) VALUES (?, ?, ?, ?,?)";
+                $query = "INSERT INTO expenses (category, date, amount, bill_file, remarks, financial_account_id) VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt = mysqli_prepare($conn, $query);
-                mysqli_stmt_bind_param($stmt, 'ssiss', $category, $date, $amount, $sanitized_file_name,$remarks);
+                $accountParam = $financialAccountId > 0 ? $financialAccountId : null;
+                mysqli_stmt_bind_param($stmt, 'ssissi', $category, $date, $amount, $sanitized_file_name, $remarks, $accountParam);
                 if (mysqli_stmt_execute($stmt)) {
                     $message = "Expense added successfully!";
                 } else {
@@ -513,36 +516,11 @@ if (isset($_POST['add_expense'])) {
     <div class="mb-4">
         <label for="category" class="form-label fw-bold"><i class="fas fa-folder-open me-2"></i>Category</label>
         <select class="form-select form-select-lg" name="category" required>
-            <option value="Office Rent">Office Rent</option>
-            <option value="Internet Bills">Internet Bills</option>
-            <option value="Utilities">Utilities</option>
-            <option value="Employee Salaries">Employee Salaries</option>
-            <option value="Marketing and Advertising">Marketing and Advertising</option>
-            <option value="Travel and Accommodation">Travel and Accommodation</option>
-            <option value="Office Supplies">Office Supplies</option>
-            <option value="Software Subscriptions">Software Subscriptions</option>
-            <option value="Professional Services">Professional Services (Legal, Accounting, etc.)</option>
-            <option value="Insurance">Insurance</option>
-            <option value="Maintenance and Repairs">Maintenance and Repairs</option>
-            <option value="Bank Fees">Bank Fees</option>
-            <option value="Investment Costs">Investment Costs</option>
-            <option value="Training and Development">Training and Development</option>
-            <option value="Client Entertainment">Client Entertainment</option>
-            <option value="Technology Upgrades">Technology Upgrades</option>
-            <option value="Data and Research">Data and Research</option>
-            <option value="Compliance and Regulatory Fees">Compliance and Regulatory Fees</option>
-            <option value="Taxes">Taxes</option>
-            <option value="Employee Benefits">Employee Benefits</option>
-            <option value="Office Refreshments">Office Refreshments</option>
-            <option value="Event Sponsorships">Event Sponsorships</option>
-            <option value="Charitable Donations">Charitable Donations</option>
-            <option value="Security Services">Security Services</option>
-            <option value="Telecommunications">Telecommunications</option>
-            <option value="Printing and Stationery">Printing and Stationery</option>
-            <option value="Vehicle Expenses">Vehicle Expenses</option>
-            <option value="Consultancy Fees">Consultancy Fees</option>
-            <option value="Miscellaneous">Miscellaneous</option>
+            <?php foreach (capistra_categories('expense', true) as $cat): ?>
+                <option value="<?php echo htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+            <?php endforeach; ?>
         </select>
+        <p class="form-text">Categories are managed in Settings &rarr; Categories.</p>
     </div>
     <div class="mb-4">
         <label for="date" class="form-label fw-bold"><i class="fas fa-calendar-alt me-2"></i>Date</label>
@@ -551,6 +529,15 @@ if (isset($_POST['add_expense'])) {
     <div class="mb-4">
         <label for="amount" class="form-label fw-bold">  <i class="fas fa-money-bill-wave me-2"></i>Amount</label>
         <input type="number" class="form-control form-control-lg" name="amount" step="0.01" required>
+    </div>
+    <div class="mb-4">
+        <label for="financial_account_id" class="form-label fw-bold"><i class="fas fa-wallet me-2"></i>Paid From</label>
+        <select class="form-select form-select-lg" name="financial_account_id">
+            <option value="0">Default cash account</option>
+            <?php foreach (capistra_financial_accounts(true) as $fa): ?>
+                <option value="<?php echo (int) $fa['id']; ?>" <?php echo (int) $fa['id'] === (int) capistra_financial_account_default() ? 'selected' : ''; ?>><?php echo htmlspecialchars($fa['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
     <div class="mb-3">
         <label for="bill_file" class="form-label">

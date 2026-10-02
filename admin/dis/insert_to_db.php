@@ -1,15 +1,9 @@
 <?php
 include 'scrape_merolagani.php'; // Assumes $data[] is populated
 
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "capistra";
-
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
-}
+// Central Capistra database bootstrap (no hard-coded credentials).
+require_once dirname(__DIR__, 2) . '/config/app.php';
+$conn = capistra_mysqli();
 
 $now = date('Y-m-d H:i:s');
 

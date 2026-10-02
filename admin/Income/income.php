@@ -3,6 +3,7 @@
 
 // Inclsession_start(); // Start the sessionude Composer autoloader
 require_once __DIR__ . '/../../config/autoload.php';
+require_once __DIR__ . '/../lib/admin.php';
 
 // Include DB connection
 include('../config/dbcon.php');
@@ -226,6 +227,7 @@ if (isset($_POST['add_income'])) {
     $amount = $_POST['amount'];
     $bill_file = $_FILES['bill_file']['name'];
     $remarks = $_POST['remarks'];
+    $financialAccountId = (int) ($_POST['financial_account_id'] ?? 0);
 
     // Validate file upload
     if ($_FILES['bill_file']['error'] === UPLOAD_ERR_OK) {
@@ -240,9 +242,10 @@ if (isset($_POST['add_income'])) {
         // Move the uploaded file
         if (move_uploaded_file($_FILES['bill_file']['tmp_name'], $target_file)) {
             // Insert into the database
-            $query = "INSERT INTO income (category, date, amount, bill_file,remarks) VALUES (?, ?, ?, ?, ?)";
+            $query = "INSERT INTO income (category, date, amount, bill_file, remarks, financial_account_id) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, 'ssdss', $category, $date, $amount, $bill_file,$remarks);
+            $accountParam = $financialAccountId > 0 ? $financialAccountId : null;
+            mysqli_stmt_bind_param($stmt, 'ssdssi', $category, $date, $amount, $bill_file, $remarks, $accountParam);
             if (mysqli_stmt_execute($stmt)) {
                 // Set success message in session
                 $_SESSION['message'] = "Income added successfully!";
@@ -507,27 +510,11 @@ if (isset($_SESSION['message'])) {
                             Category
                         </label>
                         <select class="form-select" name="category" required>
-                            <option value="Investment Returns">Investment Returns</option>
-                            <option value="Stock Market Profits">Stock Market Profits</option>
-                            <option value="Real Estate Income">Real Estate Income</option>
-                            <option value="Consultation Fees">Consultation Fees</option>
-                            <option value="Service Charges">Service Charges</option>
-                            <option value="Loan Interest">Loan Interest</option>
-                            <option value="Software Sales">Software Sales</option>
-                            <option value="Commission Income">Commission Income</option>
-                            <option value="Fund Management Fees">Fund Management Fees</option>
-                            <option value="Trading Profits">Trading Profits</option>
-                            <option value="Membership Fees">Membership Fees</option>
-                            <option value="IPO Service Charges">IPO Service Charges</option>
-                            <option value="Portfolio Management Fees">Portfolio Management Fees</option>
-                            <option value="Training & Seminar Fees">Training & Seminar Fees</option>
-                            <option value="Referral Bonuses">Referral Bonuses</option>
-                            <option value="Government Grants/Subsidies">Government Grants/Subsidies</option>
-                            <option value="Dividend Income">Dividend Income</option>
-                            <option value="Crowdfunding Contributions">Crowdfunding Contributions</option>
-                            <option value="Interest from Fixed Deposits">Interest from Fixed Deposits</option>
-                            <option value="Other">Other</option>
+                            <?php foreach (capistra_categories('income', true) as $cat): ?>
+                                <option value="<?php echo htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+                            <?php endforeach; ?>
                         </select>
+                        <p class="form-text">Categories are managed in Settings &rarr; Categories.</p>
                     </div>
                     <!-- Date Input -->
                     <div class="mb-3">
@@ -556,6 +543,15 @@ if (isset($_SESSION['message'])) {
                     <div class="mb-4">
         <label for="remarks" class="form-label fw-bold"><i class="fas fa-comment me-2"></i>Remarks</label>
         <textarea class="form-control form-control-lg" name="remarks" rows="3" placeholder="Enter any additional remarks or comments"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="financial_account_id" class="form-label fw-bold"><i class="fas fa-wallet me-2"></i>Received Into</label>
+        <select class="form-select" name="financial_account_id">
+            <option value="0">Default cash account</option>
+            <?php foreach (capistra_financial_accounts(true) as $fa): ?>
+                <option value="<?php echo (int) $fa['id']; ?>" <?php echo (int) $fa['id'] === (int) capistra_financial_account_default() ? 'selected' : ''; ?>><?php echo htmlspecialchars($fa['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
                     <!-- Submit Button -->
                     <div class="d-grid">

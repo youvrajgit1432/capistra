@@ -4,13 +4,8 @@ date_default_timezone_set('Asia/Kathmandu');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database configuration
-$dbConfig = [
-    'host' => 'localhost',
-    'user' => 'root', 
-    'pass' => '',
-    'name' => 'capistra'
-];
+// Database configuration is provided by the central Capistra bootstrap.
+require_once dirname(__DIR__, 2) . '/config/app.php';
 
 // The page to redirect to after successful operation
 $redirectUrl = '../investment/dis_stock.php'; // Change this to your desired destination
@@ -113,7 +108,7 @@ function storeStockData($data, $dbConfig) {
         throw new Exception("No data provided for storage");
     }
     
-    $conn = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
+    $conn = capistra_mysqli();
     if ($conn->connect_error) {
         throw new Exception("DB Connection failed: " . $conn->connect_error);
     }

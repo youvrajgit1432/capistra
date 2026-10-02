@@ -1,18 +1,7 @@
 <?php
  require_once('../protect/session_check.php');
-// Database connection configuration
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "capistra";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Database connection uses the central Capistra bootstrap.
+$conn = capistra_mysqli();
 
 // SQL to create the employees table with extended fields
 $sql = "CREATE TABLE IF NOT EXISTS employees (

@@ -161,6 +161,29 @@ See [`SECURITY.md`](SECURITY.md) for how to report vulnerabilities.
 
 Capistra is **not** certified accounting, tax or investment-advice software.
 
+## Dynamic configuration
+
+Capistra is configurable without editing source code:
+
+- **Settings Center** (`admin/settings/`) — general preferences, money/locale,
+  feature modules, categories, accounts & wallets, accounting mappings, fiscal
+  periods, NEPSE securities & sectors, fee rules, classifications, import/export
+  and backup.
+- **Feature modules** — `financial_profile_mode` (personal/business/hybrid) sets
+  defaults; individual modules can be toggled. Disabled modules are hidden from
+  navigation *and* blocked by direct URL.
+- **Transaction categories** — income/expense categories are rows mapped to a
+  ledger account; posting is data-driven.
+- **Financial accounts** — cash, bank, e-wallet, broker, credit card and loan
+  wallets, each linked to a ledger account, with transfers and reconciliation.
+- **NEPSE master data** — exchanges, sectors and securities live in the database;
+  add a newly listed company from the UI. Historical prices are append-only.
+- **Stock ledger** — positions, average cost, realized/unrealized P&L and
+  corporate actions are derived from `stock_transactions`.
+
+One documented precedence model governs the reporting currency
+(`app_settings.base_currency` overrides the deployment default).
+
 ## Production checklist
 
 - [ ] Change or remove the `demo_admin` account.

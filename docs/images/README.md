@@ -1,27 +1,38 @@
 # Screenshots
 
-All screenshots must be captured from the **fictional demo database only** —
-never from real customer, KYC or financial data.
+All screenshots are captured from the **fictional demo database only** — never
+from real customer, KYC or financial data. The account shown is the fictional
+`demo_admin` / `demo@example.test` demo user, and every record in the images is
+generated demo data.
 
-## Naming convention
+## What is captured (declared set)
 
-```
-01-login.png                 11-stock-investments.png
-02-financial-dashboard.png   12-real-estate.png
-03-income-management.png     13-loan-investments.png
-04-expense-management.png    14-investor-funds.png
-05-chart-of-accounts.png     15-capital-command-center.png
-06-general-ledger.png        16-scenario-planner.png
-07-trial-balance.png         17-billing.png
-08-profit-loss.png           18-employees.png
-09-balance-sheet.png         19-reports.png
-10-investment-dashboard.png  20-mobile-dashboard.png
-```
+| File | Screen | Viewport |
+|------|--------|----------|
+| `01-login.png` | Login page (signed out) | 1440 × 900 |
+| `02-dashboard.png` | Admin dashboard | 1440 × 900 |
+| `03-finance-command-center.png` | Finance & Capital Command Center | 1440 × 900 |
+| `04-income.png` | Income management | 1440 × 900 |
+| `05-expenses.png` | Expense management | 1440 × 900 |
+| `06-chart-of-accounts.png` | Chart of accounts | 1440 × 900 |
+| `07-general-ledger.png` | General ledger | 1440 × 900 |
+| `08-trial-balance.png` | Trial balance | 1440 × 900 |
+| `09-profit-loss.png` | Profit & loss | 1440 × 900 |
+| `10-balance-sheet.png` | Balance sheet | 1440 × 900 |
+| `11-investment-dashboard.png` | Investment dashboard | 1440 × 900 |
+| `12-stock-investment.png` | Stock investments | 1440 × 900 |
+| `13-scenario-planner.png` | Scenario planner | 1440 × 900 |
+| `14-settings.png` | Settings centre | 1440 × 900 |
+| `16-cash-flow.png` | Cash flow | 1440 × 900 |
+| `15-mobile-dashboard.png` | Dashboard (mobile) | 390 × 844 |
 
-## Recommended captures
+## Rules
 
-- Desktop: 1440 × 900
-- Mobile: 390 × 844 (for `20-mobile-dashboard.png`)
-
-> Screenshots are generated after functional verification. If an image is
-> referenced by the README but absent here, it has not been captured yet.
+- Desktop captures use a **1440 × 900** viewport; the mobile capture uses
+  **390 × 844**.
+- Capture **after** functional verification. Do not capture an empty or broken
+  screen just to fill a slot.
+- Every image referenced from the main `README.md` must exist in this folder.
+  If a referenced image is missing here, it has not been captured yet.
+- Screenshots are stored as PNG and must not contain real personal data,
+  credentials, uploaded documents or private reports.

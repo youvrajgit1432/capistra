@@ -148,12 +148,12 @@ Statuses reflect what the current source actually supports.
 | Loan investments | Legacy / evolving | `admin/investment/loan.php` |
 | Real-estate investments | Legacy / evolving | `admin/investment/real_estate.php` |
 | Investor / fund management | Legacy / evolving | `admin/fund/` — investors, terms, returns |
-| Customers | Implemented (legacy UI) | `admin/customer/` |
+| Customers | Data model only | The `customers` table is used by billing/accounting; the legacy KYC onboarding UI is not part of the public build |
 | Employees | Implemented (legacy UI) | `admin/employee/` |
 | Billing / invoices | Legacy / evolving | `admin/billing/` |
 | NEPSE master data (exchanges, sectors, securities, prices) | Experimental | Database-backed; seed import marks rows `unverified` |
 | Audit log | Implemented | Accounting mutations recorded |
-| Database backup | Partial / evolving | Backup + scheduler scripts; configuration is still basic |
+| Database backup | Partial / evolving | Backup + scheduler scripts read the canonical `.env` config; the scheduler is CLI-only |
 
 ---
 
@@ -193,7 +193,7 @@ capistra/
 │   ├── investment/             stocks, business, loans, real estate
 │   ├── finance/                budgets, goals, recurring, transfers, tags, reconcile
 │   ├── fund/                   investor / fund records
-│   ├── billing/  employee/  customer/
+│   ├── billing/  employee/
 │   ├── settings/               Settings Center
 │   ├── dis/                    legacy NEPSE scraper utilities
 │   └── ...                     assets, includes, page, service, head
@@ -207,7 +207,7 @@ capistra/
 │   └── README.md
 ├── design-system/              capistra-public-accounting-platform/MASTER.md
 ├── docs/                       audits + docs/images/
-├── includes/                   shared CSS
+├── includes/                   shared CSS + backup configuration loader
 ├── lib/                        categories, financial_accounts, nepse, periods,
 │                               personal_finance, portfolio, transfers, csv
 ├── protect/                    login, signup, OTP and password-reset flows
@@ -352,18 +352,20 @@ Capistra is **not** financial, tax or investment advice.
 
 ## Current Limitations / Roadmap
 
-Being transparent about the rough edges:
+Being transparent about the rough edges (see
+[`docs/LEGACY_AUDIT.md`](docs/LEGACY_AUDIT.md) for the route-by-route legacy
+audit and market-data review):
 
 - some legacy modules still use the older procedural PHP architecture;
-- newer admin screens share a single `capistra_admin_guard()`, but a few legacy
-  modules (for example parts of the investor/fund area) predate it and do not yet
-  enforce authentication consistently — review this before exposing Capistra to a
-  network;
+- newer admin screens share a single `capistra_admin_guard()`, and the legacy
+  investor/fund and market-data areas now enforce the shared session guard on
+  direct requests; a deployment should still be reviewed before exposing Capistra
+  to an untrusted network;
 - several admin screens still use the AdminLTE-era layouts;
 - stock master data still needs further normalisation;
 - market-data integration is optional and best-effort (no verified live NEPSE feed);
-- automated browser coverage should be expanded (only the login screen is
-  screenshot-verified today);
+- automated browser coverage is still thin — the published screenshots are
+  captured manually from the demo build and are not asserted in CI;
 - the dynamic personal-finance settings are still evolving;
 - mobile polish across the legacy screens can be improved;
 - deeper automated accounting tests (statement reconciliation, edge cases) can be added.
@@ -413,13 +415,56 @@ components and their licences are listed in
 
 ## Screenshots
 
-Only the login screen is currently captured and published:
+All screenshots come from the **fictional demo database** (`demo_admin`); nothing
+shown is real data. Desktop captures are 1440 × 900, the mobile capture is
+390 × 844.
 
-![Capistra login screen](docs/images/01-login.png)
+### Dashboard
 
-Additional screenshots are planned and will be captured from the fictional demo
-database only. If a screenshot is missing from your checkout, it has not been
-captured yet — see `docs/images/README.md`.
+![Capistra dashboard](docs/images/02-dashboard.png)
+
+### Accounting
+
+| Chart of accounts | General ledger |
+|---|---|
+| ![Chart of accounts](docs/images/06-chart-of-accounts.png) | ![General ledger](docs/images/07-general-ledger.png) |
+
+| Trial balance | Profit & loss |
+|---|---|
+| ![Trial balance](docs/images/08-trial-balance.png) | ![Profit and loss](docs/images/09-profit-loss.png) |
+
+| Balance sheet | Finance & Capital Command Center |
+|---|---|
+| ![Balance sheet](docs/images/10-balance-sheet.png) | ![Finance and Capital Command Center](docs/images/03-finance-command-center.png) |
+
+### Income, Expenses & Cash Flow
+
+| Income | Expenses |
+|---|---|
+| ![Income](docs/images/04-income.png) | ![Expenses](docs/images/05-expenses.png) |
+
+| Cash flow | Scenario planner |
+|---|---|
+| ![Cash flow](docs/images/16-cash-flow.png) | ![Scenario planner](docs/images/13-scenario-planner.png) |
+
+### Investments
+
+| Investment dashboard | Stock investments |
+|---|---|
+| ![Investment dashboard](docs/images/11-investment-dashboard.png) | ![Stock investments](docs/images/12-stock-investment.png) |
+
+### Settings
+
+![Settings centre](docs/images/14-settings.png)
+
+### Login & mobile
+
+| Login | Dashboard (mobile) |
+|---|---|
+| ![Login](docs/images/01-login.png) | ![Mobile dashboard](docs/images/15-mobile-dashboard.png) |
+
+See `docs/images/README.md` for the naming convention. Every image referenced
+above exists in `docs/images/`.
 
 ---
 

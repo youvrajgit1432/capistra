@@ -188,22 +188,21 @@ function updateUserPassword($usernameOrEmail, $newPassword, $conn) {
 <body>
     <div class="login-wrapper">
     <div class="login-hero">
-    <h1>Capistras</h1>
-    <p>Secure access to your investment portfolio and management tools.</p>
+    <h1>Capistra</h1>
+    <p>Self-hosted accounting, cash-flow and investment management.</p>
     <ul class="features-list">
-        <li><i class="fas fa-shield-alt"></i> Bank-level security</li>
-        <li><i class="fas fa-chart-line"></i> Real-time market data</li>
-        <li><i class="fas fa-headset"></i> 24/7 support</li>
+        <li><i class="fas fa-shield-alt"></i> Self-hosted &mdash; your data stays on your server</li>
+        <li><i class="fas fa-book"></i> Double-entry ledger and financial statements</li>
+        <li><i class="fas fa-chart-line"></i> Personal finance and investment tracking</li>
     </ul>
-    <a href="iiiindex.php" style="font-size:30px; font-weight:bold; text-decoration:none;" class="btn btn-outline-light btn-lg m-t3">Click Here</a>
-    <i class="fas fa-info-circle me-2"></i>Learn More About Our Company
-</a>
+    <a href="iiiindex.php" style="font-size:24px; font-weight:bold; text-decoration:none;" class="btn btn-outline-light btn-lg m-t3">Learn more</a>
+    <p style="margin-top:10px;"><i class="fas fa-info-circle me-2"></i>About the Capistra project</p>
 </div>
         
         <div class="login-container">
             <div class="logo">
-                <div class="logo-icon">GMI</div>
-                <h2>Capistras</h2>
+                <div class="logo-icon">CAP</div>
+                <h2>Capistra</h2>
             </div>
             
             <?php if (!empty($passwordChangeSuccess)): ?>
@@ -320,7 +319,7 @@ function updateUserPassword($usernameOrEmail, $newPassword, $conn) {
             
             <div class="security-info">
                 <i class="fas fa-lock"></i>
-                <span>256-bit SSL encrypted connection</span>
+                <span>Passwords stored as bcrypt hashes</span>
             </div>
         </div>
     </div>

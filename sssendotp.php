@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/config/app.php';
+
 session_start();
 require_once __DIR__ . '/config/autoload.php';
 
@@ -30,17 +32,21 @@ if (isset($_SESSION['reset_email'])) {
 $mail = new PHPMailer(true);
 
 try {
+    if (MAIL_USERNAME === '' || MAIL_PASSWORD === '') {
+        throw new Exception('Mail is not configured. Set MAIL_USERNAME and MAIL_PASSWORD in .env.');
+    }
+
     // Server settings for email
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
+    $mail->Host = MAIL_HOST !== '' ? MAIL_HOST : 'smtp.gmail.com';
     $mail->SMTPAuth = true;
-    $mail->Username = 'no-reply@example.test';
-    $mail->Password = 'change-me';
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587;
+    $mail->Username = MAIL_USERNAME;
+    $mail->Password = MAIL_PASSWORD;
+    $mail->SMTPSecure = MAIL_ENCRYPTION === 'ssl' ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = MAIL_PORT > 0 ? MAIL_PORT : 587;
 
     // Recipients
-    $mail->setFrom('no-reply@example.test', 'Capistra');
+    $mail->setFrom(MAIL_FROM !== '' ? MAIL_FROM : MAIL_USERNAME, 'Capistra');
     $mail->addAddress($email);
 
     // Content

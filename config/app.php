@@ -32,7 +32,7 @@ if (!defined('CAPISTRA_BOOTSTRAPPED')) {
     // ---- Runtime --------------------------------------------------------------
     define('APP_ENV', (string) (capistra_env('APP_ENV', 'local')));
     define('APP_DEBUG', capistra_env('APP_DEBUG', 'false') === 'true');
-    define('APP_URL', (string) (capistra_env('APP_URL', 'http://localhost/gmic')));
+    define('APP_URL', (string) (capistra_env('APP_URL', 'http://localhost/capistra')));
     define('APP_BASE_CURRENCY', (string) (capistra_env('APP_BASE_CURRENCY', 'NPR')));
     define('APP_KEY', (string) (capistra_env('APP_KEY', '')));
 
@@ -45,6 +45,15 @@ if (!defined('CAPISTRA_BOOTSTRAPPED')) {
     define('DB_USER', (string) (capistra_env('DB_USER', 'root')));
     define('DB_PASSWORD', (string) (capistra_env('DB_PASSWORD', '')));
     define('DB_CHARSET', (string) (capistra_env('DB_CHARSET', 'utf8mb4')));
+
+    // ---- Mail (optional: used only by OTP / notification features) ------------
+    // Never hardcode credentials in source. Set these in the git-ignored `.env`.
+    define('MAIL_HOST', (string) (capistra_env('MAIL_HOST', '')));
+    define('MAIL_PORT', (int) (capistra_env('MAIL_PORT', '587')));
+    define('MAIL_USERNAME', (string) (capistra_env('MAIL_USERNAME', '')));
+    define('MAIL_PASSWORD', (string) (capistra_env('MAIL_PASSWORD', '')));
+    define('MAIL_FROM', (string) (capistra_env('MAIL_FROM', '')));
+    define('MAIL_ENCRYPTION', (string) (capistra_env('MAIL_ENCRYPTION', 'tls')));
 
     // Never leak PHP errors to the browser outside of local debugging.
     if (APP_DEBUG) {

@@ -82,6 +82,9 @@ logs/
 **/logs/
 *.log
 error.log
+
+# ---- Scraper runtime output (regenerated locally) ------------------------
+admin/dis/last_scraped.html
 /tmp/
 /storage/
 **/sessions/

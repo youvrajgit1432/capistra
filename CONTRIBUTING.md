@@ -34,7 +34,7 @@ php tests/run-tests.php
 ```
 
 - Keep the design system as the visual source of truth
-  (`design-system/gmic-public-accounting-platform/MASTER.md`).
+  (`design-system/capistra-public-accounting-platform/MASTER.md`).
 - Add or update tests for financial logic (double-entry balancing, trial
   balance, statements).
 - Write clear, atomic commits.

@@ -1,206 +1,430 @@
 # Capistra
 
-**Self-hosted Accounting, Cash-Flow & Investment Management Platform**
+**Self-hosted Personal Accounting, Cash-Flow & Investment Management Platform**
 
-Capistra is an open, self-hosted platform that combines a real double-entry
-accounting core with multi-asset investment tracking and investor/fund
-management — in a single, privacy-first application you run on your own server.
+Capistra is a PHP + MySQL web application that you run on your own server. It
+combines a double-entry accounting core with cash-flow tracking and multi-asset
+investment records in a single, self-hosted codebase — so personal and operating
+finances live in one place instead of being spread across a bookkeeping tool and
+a separate investment spreadsheet.
 
-![Capistra trust-navy finance dashboard](docs/images/02-financial-dashboard.png)
+Capistra is an open-source **portfolio / learning project**. It is *not* certified
+accounting, tax or financial-advisory software, it is not "enterprise grade", and
+it is not a hosted service.
 
-> **This public repository contains FICTIONAL demonstration data only.**
-> Every name, company, email, phone number, account number and financial figure
-> in `database/demo_seed.sql` is invented. See [Privacy](#privacy).
+> **The public repository ships FICTIONAL demonstration data only.**
+> Every name, company, email, phone number, account number and amount in
+> `database/demo_seed.sql` is invented. See [Demo & Production Warning](#demo--production-warning).
 
 ---
 
-## Why this project exists
+## Project Evolution
 
-Most self-hosted bookkeeping tools stop at income and expenses. Most investment
-trackers ignore double-entry accounting. Capistra was built to close that gap:
-accounting and capital allocation in **one** system, without sending financial
-data to a third party.
+Honesty about where this code came from matters, so here it is.
 
-## Key differentiators
+Capistra began roughly **three years ago as an early PHP/MySQL learning project**
+under the internal name **GMIC**. The original code was written while learning the
+basics: PHP, MySQL, CRUD screens, session authentication, financial forms,
+dashboard layouts, file handling and printable reports.
 
-- **Accounting + investments together.** A proper chart of accounts, journal,
-  ledger and financial statements, next to a portfolio of stocks, businesses,
-  real estate and loans.
-- **Finance & Capital Command Center.** Cash position, operating result, assets,
-  liabilities, equity, portfolio cost vs value, unrealized gain/loss and
-  investor capital in one view.
-- **Investor / fund management.** Investor profiles, equity/debt/profit-sharing
-  terms, allocations and recorded returns.
-- **Scenario / liquidity planner.** Project cash, runway, surplus and deficit
-  against a reserve target. Clearly labelled a *calculator*, not advice.
-- **Privacy-first account metadata.** Store *masked* account identifiers and
-  notes — never third-party logins, passwords, security answers or OTP secrets.
-- **Configurable localisation.** Base currency (NPR by default) is configurable;
-  the UI works with any currency code.
+Over time it accumulated modules for income, expenses, investments (stocks,
+businesses, loans, real estate), clients/customers, employees, billing, employee
+records and investor/fund records. Some of those modules still carry the shape of
+that learning phase.
 
-## Features
+In **2026** the project was revisited and reworked into what you see today:
 
-**Accounting** — Chart of accounts (assets, liabilities, equity, income,
-expenses), double-entry journal enforced to balance, general ledger, trial
-balance, profit & loss, balance sheet, cash-flow summary, period filtering and
-an audit trail.
+- removed private and company-specific data from the codebase;
+- renamed the product from **GMIC** to **Capistra** and centralised the brand;
+- added a **fictional public demo dataset** so the app can be shared safely;
+- centralised configuration (`.env` + `config/app.php`) instead of ad-hoc settings;
+- improved the authentication and session foundations;
+- introduced proper **accounting primitives** (chart of accounts, journal, periods);
+- linked income and expenses to a **double-entry ledger**;
+- added financial statements (trial balance, P&L, balance sheet, cash flow);
+- added a **Finance & Capital Command Center** dashboard;
+- added **scenario / liquidity planning**;
+- added documentation, CI, security and contribution files;
+- prepared the codebase for public learning and further development.
 
-**Income & Expense** — Categorised income and expenses with attachments, search,
-filters, reports and recycle-bin restore; designed to post to the journal.
+**This remains an evolving project.** Some legacy modules still reflect the
+original learning-project architecture and are being progressively modernised.
+That mix — old and new side by side — is part of what makes the repository useful
+to read.
 
-**Investments** — Unified investment records with per-asset detail for stocks,
-businesses, loans and real estate, cost basis, latest valuation and status.
-Market data is optional and cached locally, so the app works offline.
+---
 
-**Investor / Fund** — Investor profiles, equity and debt terms, profit-sharing,
-and recorded returns.
+## What Makes Capistra Different?
 
-**Finance Command Center & Scenario Planner** — See the differentiators above.
+No single idea here is unique. The point of difference is the **combination** of
+them inside one self-hosted application that you fully control.
 
-**Billing, Employees, Customers** — Invoice/bill records, employee directory
-(sensitive fields optional) and a simplified, privacy-first customer model.
+### Accounting + Personal Finance
 
-**Reports** — Print-friendly financial statements; CSV where practical.
+Rather than only recording expenses, Capistra now links money movement to a real
+ledger:
 
-## Tech stack
+- income and expense records;
+- cash-flow tracking;
+- chart of accounts;
+- double-entry journal;
+- general ledger;
+- trial balance;
+- profit & loss;
+- balance sheet;
+- cash-flow reporting;
+- budgets, recurring transactions, goals, transfers and reconciliations.
 
-- PHP 8 (procedural + PDO/mysqli), MySQL / MariaDB
-- Apache (XAMPP-friendly)
-- Bootstrap/AdminLTE legacy admin + a new design-system-based accounting module
-- Optional Composer packages: `phpmailer/phpmailer`, `setasign/fpdf`, `google/apiclient`
+### Accounting + Investment Tracking
 
-## Architecture
+The same project also records several investment classes — **stocks, business
+investments, loan investments and real-estate investments** — so the dashboard can
+put operating finances and capital allocation side by side instead of treating
+them as unrelated.
+
+### Nepal / NEPSE Origins
+
+Capistra grew out of a Nepal-based context, so it ships Nepal-focused
+stock-investment concepts and **NPR-first** financial formatting (the base
+currency is configurable). A NEPSE-oriented master-data and market-data model
+exists, but it is **still an area of active improvement** — see
+[Current Limitations](#current-limitations--roadmap). There is **no verified live
+official NEPSE integration**; market data is optional and best-effort.
+
+### Finance & Capital Command Center
+
+The modernised dashboard combines, on one screen: cash position, income,
+expenses, net result, assets, liabilities, equity, investment cost, portfolio
+value and investor/fund capital.
+
+### Scenario Planner
+
+A planning screen lets you model simple scenarios — expected income, operating
+expenses, planned investment, loan repayment and a cash-reserve target — to see
+projected surplus or deficit.
+
+> The planner is a **planning utility only**. It does not provide financial,
+> tax or investment advice.
+
+### Self-hosted
+
+- PHP + MySQL/MariaDB; no mandatory SaaS service;
+- runs comfortably on XAMPP (or any Apache + PHP + MySQL stack);
+- your data stays on your own machine or server;
+- the code can be inspected, forked and modified.
+
+### Learning-Friendly Open Source
+
+Because the codebase evolved from an early learning project, developers can study
+**both** the legacy procedural PHP patterns **and** the newer structured
+accounting/configuration architecture — and see exactly how a project like this
+grows up over time.
+
+---
+
+## Current Feature Status
+
+Statuses reflect what the current source actually supports.
+
+| Feature | Status | Notes |
+|---|---|---|
+| Authentication (login, sessions, OTP, password reset) | Implemented | `password_hash()`/`password_verify()`, CSRF, session hardening |
+| Financial dashboard | Implemented | `admin/index.php` (legacy AdminLTE-era layout) |
+| Income management | Implemented (legacy UI) | `admin/Income/income.php`; posts to the ledger |
+| Expense management | Implemented (legacy UI) | `admin/Expense/expense.php`; posts to the ledger |
+| Chart of accounts | Implemented | `accounting/chart-of-accounts.php` |
+| Journal | Implemented | `accounting/journal.php`; entries must balance |
+| General ledger | Implemented | `accounting/general-ledger.php` |
+| Trial balance | Implemented | `accounting/trial-balance.php` |
+| Profit & loss | Implemented | `accounting/profit-loss.php` |
+| Balance sheet | Implemented | `accounting/balance-sheet.php` |
+| Cash flow | Implemented | `accounting/cash-flow.php` |
+| Finance & Capital Command Center | Implemented | `accounting/index.php` |
+| Scenario planner | Implemented | `accounting/planner.php` (planning utility only) |
+| Settings Center | Implemented | `admin/settings/` — currency, features, categories, accounts, fiscal periods |
+| Personal finance (budgets, goals, recurring, transfers, tags, reconciliation) | Implemented | `admin/finance/` |
+| Stock investments | Experimental / evolving | Legacy `admin/investment/stock.php` plus a newer `portfolios`/`stock_transactions` model |
+| Business investments | Legacy / evolving | `admin/investment/business.php` |
+| Loan investments | Legacy / evolving | `admin/investment/loan.php` |
+| Real-estate investments | Legacy / evolving | `admin/investment/real_estate.php` |
+| Investor / fund management | Legacy / evolving | `admin/fund/` — investors, terms, returns |
+| Customers | Implemented (legacy UI) | `admin/customer/` |
+| Employees | Implemented (legacy UI) | `admin/employee/` |
+| Billing / invoices | Legacy / evolving | `admin/billing/` |
+| NEPSE master data (exchanges, sectors, securities, prices) | Experimental | Database-backed; seed import marks rows `unverified` |
+| Audit log | Implemented | Accounting mutations recorded |
+| Database backup | Partial / evolving | Backup + scheduler scripts; configuration is still basic |
+
+---
+
+## Tech Stack
+
+- **PHP 8** (procedural + PDO/mysqli), no framework
+- **MySQL / MariaDB**
+- **Apache** (XAMPP-friendly)
+- **JavaScript** — plain DOM scripts, plus bundled jQuery/AdminLTE plugins
+- **Bootstrap / AdminLTE** for the legacy admin areas; a newer design-system-based
+  CSS layer (`assets/css/capistra.css`) for the accounting module
+- **Composer** for optional packages only: `phpmailer/phpmailer`,
+  `setasign/fpdf`, `google/apiclient`
+
+There is no Laravel/Symfony/etc. in this project.
+
+---
+
+## Project Structure
 
 ```
-config/            Canonical bootstrap (.env loader, DB, session, branding)
-accounting/        New accounting & capital module (design-system UI)
-  lib/             Ledger engine, auth/CSRF/audit, layout
-database/          schema.sql + demo_seed.sql (public, safe)
-admin/             Legacy admin modules (income, expense, investments, ...)
-design-system/     UI UX Pro Max MASTER.md (visual source of truth)
-assets/css/        capistra.css (design tokens + components)
-docs/              Naming research, page audit, security audit
+capistra/
+├── accounting/                 New accounting & capital module
+│   ├── index.php               Finance & Capital Command Center
+│   ├── chart-of-accounts.php
+│   ├── journal.php
+│   ├── general-ledger.php
+│   ├── trial-balance.php
+│   ├── profit-loss.php
+│   ├── balance-sheet.php
+│   ├── cash-flow.php
+│   ├── ledger-sync.php
+│   ├── planner.php
+│   └── lib/                    auth, integrate, layout, ledger
+├── admin/                      Legacy admin modules
+│   ├── Income/  Expense/
+│   ├── investment/             stocks, business, loans, real estate
+│   ├── finance/                budgets, goals, recurring, transfers, tags, reconcile
+│   ├── fund/                   investor / fund records
+│   ├── billing/  employee/  customer/
+│   ├── settings/               Settings Center
+│   ├── dis/                    legacy NEPSE scraper utilities
+│   └── ...                     assets, includes, page, service, head
+├── assets/css/                 capistra.css design tokens
+├── config/                     app.php, env.php, autoload.php, session.php,
+│                               features.php, settings.php
+├── database/
+│   ├── schema.sql
+│   ├── demo_seed.sql
+│   ├── migrations/001_dynamic_foundation.sql
+│   └── README.md
+├── design-system/              capistra-public-accounting-platform/MASTER.md
+├── docs/                       audits + docs/images/
+├── includes/                   shared CSS
+├── lib/                        categories, financial_accounts, nepse, periods,
+│                               personal_finance, portfolio, transfers, csv
+├── protect/                    login, signup, OTP and password-reset flows
+├── scripts/                    migrate_nepse_seed.php + Windows backup helpers
+├── tests/run-tests.php
+├── .github/workflows/ci.yml
+├── index.php                   Login
+├── iiiindex.php                Public project landing page
+├── .env.example
+├── composer.json
+├── README.md
+├── SECURITY.md
+├── CONTRIBUTING.md
+├── THIRD_PARTY_NOTICES.md
+└── LICENSE
 ```
 
-## Installation
+---
+
+## Main Application Areas
+
+Paths are relative to your install (example base `http://localhost/capistra`).
+Only routes that exist today are listed.
+
+| Area | Path |
+|---|---|
+| Login | `/` |
+| Dashboard | `/admin/` |
+| Finance & Capital Command Center | `/accounting/` |
+| Chart of Accounts | `/accounting/chart-of-accounts.php` |
+| Journal | `/accounting/journal.php` |
+| General Ledger | `/accounting/general-ledger.php` |
+| Trial Balance | `/accounting/trial-balance.php` |
+| Profit & Loss | `/accounting/profit-loss.php` |
+| Balance Sheet | `/accounting/balance-sheet.php` |
+| Cash Flow | `/accounting/cash-flow.php` |
+| Scenario Planner | `/accounting/planner.php` |
+| Income | `/admin/Income/income.php` |
+| Expenses | `/admin/Expense/expense.php` |
+| Investments | `/admin/investment/index.php` |
+| Stock Investment | `/admin/investment/stock.php` |
+| Personal Finance | `/admin/finance/` |
+| Investor / Fund | `/admin/fund/fundmanagement.php` |
+| Settings Center | `/admin/settings/` |
+
+---
+
+## Installation (Windows + XAMPP)
 
 ### Prerequisites
 
-- XAMPP (or Apache + PHP 8 + MySQL/MariaDB)
-- Composer (optional; only for PDF/mail features)
+- XAMPP (Apache + PHP 8 + MySQL/MariaDB), or an equivalent LAMP stack
+- Composer (optional — only needed for PDF and email features)
 
 ### Steps
 
-1. **Place the project** under your web root (XAMPP: `C:\xampp\htdocs\capistra`).
-2. **Install dependencies** (optional):
+1. **Clone into your web root** so the folder is named `capistra`:
+
    ```bash
+   cd C:/xampp/htdocs
+   git clone https://github.com/youvrajgit1432/capistra.git
+   ```
+
+2. **Install optional dependencies:**
+
+   ```bash
+   cd C:/xampp/htdocs/capistra
    composer install
    ```
-3. **Configure the environment:**
+
+3. **Create your environment file:**
+
    ```bash
    cp .env.example .env
    ```
-   Set `DB_NAME=capistra`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`.
+
+   Then set at least `APP_URL`, `DB_HOST`, `DB_NAME`, `DB_USER` and
+   `DB_PASSWORD`. Because the folder is named `capistra`, the default
+   `APP_URL` should be:
+
+   ```
+   APP_URL="http://localhost/capistra"
+   ```
+
 4. **Create the database and import the schema + demo data:**
+
    ```bash
    mysql -u root -p -e "CREATE DATABASE capistra CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
    mysql -u root -p capistra < database/schema.sql
    mysql -u root -p capistra < database/demo_seed.sql
    ```
-5. **Start Apache and MySQL**, then open the app:
-   `http://localhost/capistra/`
 
-Full database instructions: [`database/README.md`](database/README.md).
+   (In phpMyAdmin, import the two files in the same order.)
 
-## Demo credentials (LOCAL DEMO ONLY)
+5. **Start Apache and MySQL**, then open:
+
+   ```
+   http://localhost/capistra/
+   ```
+
+More database detail: [`database/README.md`](database/README.md).
+
+> Note: the author's own development copy still lives in
+> `C:\xampp\htdocs\gmic` served at `http://localhost/gmic`. That is a local
+> path only — a fresh clone should use the `capistra` slug exactly as above.
+
+---
+
+## Demo Account (LOCAL DEMO ONLY — FICTIONAL DATA)
 
 | Field | Value |
-|-------|-------|
+|---|---|
 | URL | `http://localhost/capistra/` |
 | Username | `demo_admin` |
 | Email | `demo@example.test` |
 | Password | `Demo@12345` |
 
-These credentials exist solely for local demonstration with fictional data.
+This account and the seed database contain **fictional data only**. The password
+is stored as a `password_hash()` value, never plaintext. It is a local
+demonstration credential and is **not** suitable for production — see below.
 
-## Screenshots
+---
 
-Screenshots live in `docs/images/` and use fictional demo data only.
+## Demo & Production Warning
 
-| | |
-|---|---|
-| ![Financial dashboard](docs/images/02-financial-dashboard.png) | ![Trial balance](docs/images/07-trial-balance.png) |
-| ![Capital command center](docs/images/15-capital-command-center.png) | ![Scenario planner](docs/images/16-scenario-planner.png) |
+The included demo account and seed database contain fictional data only.
 
-<sub>Screenshots are generated from the fictional demo database. If an image is
-missing in your checkout, see `docs/images/README.md`.</sub>
+Before using Capistra with real data:
 
-## Security model
+- change the administrator credentials and remove the demo account;
+- review `.env` and set a strong `APP_KEY` and real database credentials;
+- disable `APP_DEBUG` and set a production environment;
+- serve the site over HTTPS and enable secure cookies;
+- review filesystem and directory permissions;
+- review email configuration before enabling OTP/notifications;
+- review upload and storage settings, and keep uploads out of version control;
+- back up your data securely and test the restore path.
+
+Capistra is **not** financial, tax or investment advice.
+
+---
+
+## Current Limitations / Roadmap
+
+Being transparent about the rough edges:
+
+- some legacy modules still use the older procedural PHP architecture;
+- newer admin screens share a single `capistra_admin_guard()`, but a few legacy
+  modules (for example parts of the investor/fund area) predate it and do not yet
+  enforce authentication consistently — review this before exposing Capistra to a
+  network;
+- several admin screens still use the AdminLTE-era layouts;
+- stock master data still needs further normalisation;
+- market-data integration is optional and best-effort (no verified live NEPSE feed);
+- automated browser coverage should be expanded (only the login screen is
+  screenshot-verified today);
+- the dynamic personal-finance settings are still evolving;
+- mobile polish across the legacy screens can be improved;
+- deeper automated accounting tests (statement reconciliation, edge cases) can be added.
+
+---
+
+## Running the Tests
+
+```bash
+# PHP syntax check across the project
+find . -name '*.php' -not -path './vendor/*' -exec php -l {} \;
+
+# Financial-logic tests
+php tests/run-tests.php
+```
+
+---
+
+## Contributing
+
+Capistra is open source and intended for learning, experimentation and further
+development. You are welcome to **fork, clone, modify, extend and submit pull
+requests**, subject to the repository [license](#license).
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the workflow. The one rule that
+matters most: **never commit real data** — no customer/KYC data, uploads,
+database dumps or secrets.
+
+---
+
+## Security
 
 - `password_hash()` / `password_verify()` for credentials; never plaintext.
-- Prepared statements for all queries.
+- Prepared statements for database access.
 - CSRF tokens on state-changing forms.
 - Secure sessions (`HttpOnly`, `SameSite`, id regeneration, inactivity timeout).
-- Login rate limiting with generic error messages.
-- Output escaping; input validation.
+- Output escaping and input validation.
 - Audit trail for accounting mutations.
 - **No credential vault:** the application does not store email/bank passwords,
   security answers or OTP secrets.
 
-See [`SECURITY.md`](SECURITY.md) for how to report vulnerabilities.
+To report a vulnerability, see [`SECURITY.md`](SECURITY.md). Third-party
+components and their licences are listed in
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-## Privacy
+---
 
-> The public repository contains **fictional demonstration data only**.
-> The original private system's customer, KYC and credential data was backed up
-> privately and excluded from this repository — it was never committed.
->
-> If you deploy Capistra with real data, **you** are responsible for securing it:
-> change the demo account, set a strong `APP_KEY`, keep the database and any
-> uploaded documents off version control, and serve the app over HTTPS.
+## Screenshots
 
-Capistra is **not** certified accounting, tax or investment-advice software.
+Only the login screen is currently captured and published:
 
-## Dynamic configuration
+![Capistra login screen](docs/images/01-login.png)
 
-Capistra is configurable without editing source code:
+Additional screenshots are planned and will be captured from the fictional demo
+database only. If a screenshot is missing from your checkout, it has not been
+captured yet — see `docs/images/README.md`.
 
-- **Settings Center** (`admin/settings/`) — general preferences, money/locale,
-  feature modules, categories, accounts & wallets, accounting mappings, fiscal
-  periods, NEPSE securities & sectors, fee rules, classifications, import/export
-  and backup.
-- **Feature modules** — `financial_profile_mode` (personal/business/hybrid) sets
-  defaults; individual modules can be toggled. Disabled modules are hidden from
-  navigation *and* blocked by direct URL.
-- **Transaction categories** — income/expense categories are rows mapped to a
-  ledger account; posting is data-driven.
-- **Financial accounts** — cash, bank, e-wallet, broker, credit card and loan
-  wallets, each linked to a ledger account, with transfers and reconciliation.
-- **NEPSE master data** — exchanges, sectors and securities live in the database;
-  add a newly listed company from the UI. Historical prices are append-only.
-- **Stock ledger** — positions, average cost, realized/unrealized P&L and
-  corporate actions are derived from `stock_transactions`.
-
-One documented precedence model governs the reporting currency
-(`app_settings.base_currency` overrides the deployment default).
-
-## Production checklist
-
-- [ ] Change or remove the `demo_admin` account.
-- [ ] Set a strong `APP_KEY` (`php -r "echo bin2hex(random_bytes(32));"`).
-- [ ] Create your own administrator with a strong password.
-- [ ] Serve over HTTPS and set `SESSION_SECURE_COOKIE=true`.
-- [ ] Set `APP_DEBUG=false` and `APP_ENV=production`.
-- [ ] Restrict database user privileges to the `capistra` schema only.
-- [ ] Disable directory listing; block execution in upload directories.
-- [ ] Take and test regular encrypted backups (outside the web root).
-
-## Contributing
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). Please never commit real customer
-data, secrets, database dumps or uploaded documents.
+---
 
 ## License
 
-Released under the [MIT License](LICENSE). Third-party components retain their
-own licenses — see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+Released under the [MIT License](LICENSE). This permits use, modification and
+redistribution subject to the licence terms. Bundled third-party components
+retain their own licences — see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

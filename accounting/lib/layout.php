@@ -22,6 +22,7 @@ if (!function_exists('capistra_nav_items')) {
                 'profit-loss.php'       => 'Profit & Loss',
                 'balance-sheet.php'     => 'Balance Sheet',
                 'cash-flow.php'         => 'Cash Flow',
+                'ledger-sync.php'       => 'Income/Expense Sync',
             ],
         ];
     }

@@ -206,3 +206,202 @@ INSERT INTO `journal_lines` (`journal_entry_id`, `account_id`, `debit`, `credit`
 -- -----------------------------------------------------------------------------
 INSERT INTO `audit_log` (`user_id`, `action`, `entity_type`, `entity_id`, `details`, `ip_address`) VALUES
 (1, 'seed', 'system', NULL, 'Demo data seeded', '127.0.0.1');
+
+-- =============================================================================
+-- DYNAMIC SYSTEM DEMO DATA (all fictional)
+-- =============================================================================
+
+-- -----------------------------------------------------------------------------
+-- Transaction categories, each mapped to a ledger account
+-- -----------------------------------------------------------------------------
+INSERT INTO `transaction_categories` (`id`, `type`, `name`, `slug`, `description`, `ledger_account_id`, `is_active`, `sort_order`) VALUES
+(1,  'income',  'Consulting',                 'consulting',                 'Professional consulting fees',       13, 1, 10),
+(2,  'income',  'Service Charges',            'service-charges',            'Service fees',                      13, 1, 20),
+(3,  'income',  'Software Sales',             'software-sales',             'Software licensing',                13, 1, 30),
+(4,  'income',  'Investment Returns',         'investment-returns',         'General investment returns',        14, 1, 40),
+(5,  'income',  'Dividend Income',            'dividend-income',            'Cash dividends received',           14, 1, 50),
+(6,  'income',  'Loan Interest',              'loan-interest',              'Interest on loans given',           14, 1, 60),
+(7,  'income',  'Interest from Fixed Deposits','interest-from-fixed-deposits','Bank FD interest',                 14, 1, 70),
+(8,  'income',  'Stock Market Profits',       'stock-market-profits',       'Realised trading gains',            14, 1, 80),
+(9,  'income',  'Real Estate Income',         'real-estate-income',         'Rental and property income',        13, 1, 90),
+(10, 'income',  'Commission Income',          'commission-income',          'Commissions',                       13, 1, 100),
+(11, 'income',  'Other Income',               'other-income',               'Miscellaneous income',              15, 1, 999),
+(12, 'expense', 'Office Rent',                'office-rent',                'Premises rent',                     16, 1, 10),
+(13, 'expense', 'Salaries and Wages',         'salaries-and-wages',         'Payroll',                           17, 1, 20),
+(14, 'expense', 'Utilities',                  'utilities',                  'Electricity, water, internet',      18, 1, 30),
+(15, 'expense', 'Marketing',                  'marketing',                  'Advertising and promotion',         19, 1, 40),
+(16, 'expense', 'Professional Fees',          'professional-fees',          'Legal and accounting',              20, 1, 50),
+(17, 'expense', 'Travel',                     'travel',                     'Travel and transport',              21, 1, 60),
+(18, 'expense', 'Office Supplies',            'office-supplies',            'Consumables',                       21, 1, 70),
+(19, 'expense', 'Taxes',                      'taxes',                      'Taxes and duties',                  21, 1, 80),
+(20, 'expense', 'Other Expenses',             'other-expenses',             'Miscellaneous expense',             21, 1, 999);
+
+-- -----------------------------------------------------------------------------
+-- Financial accounts (wallets) - each linked to a ledger account
+-- -----------------------------------------------------------------------------
+INSERT INTO `financial_accounts` (`id`, `name`, `type`, `institution`, `currency`, `opening_balance`, `masked_reference`, `ledger_account_id`, `is_active`, `notes`) VALUES
+(1, 'Cash Wallet',      'cash',        NULL,             'NPR',      50000.00, NULL,       1, 1, 'Everyday cash (fictional).'),
+(2, 'Primary Bank',     'bank',        'Example Bank',   'NPR',     150000.00, '****4321', 1, 1, 'Main operating account (fictional).'),
+(3, 'Savings Account',  'bank',        'Example Bank',   'NPR',     400000.00, '****9876', 1, 1, 'Long-term savings (fictional).'),
+(4, 'eSewa Wallet',     'e_wallet',    'Demo Wallet',    'NPR',      12000.00, '****5555', 1, 1, 'Digital wallet (fictional).'),
+(5, 'Broker Cash',      'broker',      'Demo Securities','NPR',     250000.00, '****8765', 1, 1, 'Broker settlement account (fictional).'),
+(6, 'Demo Credit Card', 'credit_card', 'Example Bank',   'NPR',          0.00, '****1111', 9, 1, 'Credit card liability (fictional).');
+
+-- Assign the demo income/expense rows to a financial account.
+UPDATE `income`   SET `financial_account_id` = 1 WHERE `id` = 1;
+UPDATE `income`   SET `financial_account_id` = 2 WHERE `id` = 2;
+UPDATE `expenses` SET `financial_account_id` = 2 WHERE `id` = 1;
+UPDATE `expenses` SET `financial_account_id` = 2 WHERE `id` = 2;
+UPDATE `expenses` SET `financial_account_id` = 1 WHERE `id` = 3;
+
+-- -----------------------------------------------------------------------------
+-- Market master data (NEPSE) - fictional securities
+-- -----------------------------------------------------------------------------
+INSERT INTO `market_exchanges` (`id`, `code`, `name`, `country`, `currency`, `is_active`) VALUES
+(1, 'NEPSE', 'Nepal Stock Exchange', 'Nepal', 'NPR', 1);
+
+INSERT INTO `market_sectors` (`id`, `exchange_id`, `name`, `slug`, `is_active`, `sort_order`) VALUES
+(1,  1, 'Commercial Bank',         'commercial-bank',          1, 10),
+(2,  1, 'Development Bank',        'development-bank',         1, 20),
+(3,  1, 'Finance',                 'finance',                  1, 30),
+(4,  1, 'Microfinance',            'microfinance',             1, 40),
+(5,  1, 'Life Insurance',          'life-insurance',           1, 50),
+(6,  1, 'Non-Life Insurance',      'non-life-insurance',       1, 60),
+(7,  1, 'Micro Life Insurance',    'micro-life-insurance',     1, 70),
+(8,  1, 'Micro Non-Life Insurance','micro-non-life-insurance', 1, 80),
+(9,  1, 'Hydropower',              'hydropower',               1, 90),
+(10, 1, 'Manufacturing',           'manufacturing',            1, 100),
+(11, 1, 'Hotel & Tourism',         'hotel-tourism',            1, 110),
+(12, 1, 'Trading',                 'trading',                  1, 120),
+(13, 1, 'Telecom',                 'telecom',                  1, 130),
+(14, 1, 'Others',                  'others',                   1, 999);
+
+INSERT INTO `securities` (`id`, `exchange_id`, `sector_id`, `symbol`, `company_name`, `security_type`, `listing_status`, `is_active`, `notes`) VALUES
+(1, 1, 9,  'EXHYD',  'Example Hydro Ltd',        'equity', 'unverified', 1, 'Fictional demo security.'),
+(2, 1, 1,  'DEMOBNK','Demo Commercial Bank Ltd','equity', 'unverified', 1, 'Fictional demo security.'),
+(3, 1, 4,  'SMPMF',  'Sample Micro Finance Ltd', 'equity', 'unverified', 1, 'Fictional demo security.'),
+(4, 1, 5,  'SAMPLINS','Sample Life Insurance Ltd','equity','unverified', 1, 'Fictional demo security.'),
+(5, 1, 10, 'EXMFN',  'Example Manufacturing Ltd','equity', 'unverified', 1, 'Fictional demo security.'),
+(6, 1, 13, 'DEMOTEL','Demo Telecom Ltd',         'equity', 'unverified', 1, 'Fictional demo security.');
+
+-- -----------------------------------------------------------------------------
+-- Historical prices (append-only)
+-- -----------------------------------------------------------------------------
+INSERT INTO `security_prices` (`security_id`, `price_date`, `open`, `high`, `low`, `close`, `volume`, `source`, `fetched_at`) VALUES
+(1, '2025-09-29', 270.00, 277.00, 268.00, 274.00,  950, 'manual', '2025-09-29 15:00:00'),
+(1, '2025-09-30', 274.00, 280.00, 272.00, 275.00, 1200, 'manual', '2025-09-30 15:00:00'),
+(1, '2025-10-01', 275.00, 281.00, 273.00, 278.00, 1100, 'manual', '2025-10-01 15:00:00'),
+(3, '2025-09-30', 505.00, 515.00, 502.00, 512.00,  800, 'manual', '2025-09-30 15:00:00'),
+(2, '2025-09-30', 480.00, 492.00, 478.00, 488.00, 2100, 'manual', '2025-09-30 15:00:00');
+
+-- -----------------------------------------------------------------------------
+-- Portfolios + transaction-based stock ledger
+-- -----------------------------------------------------------------------------
+INSERT INTO `portfolios` (`id`, `name`, `description`, `is_active`) VALUES
+(1, 'Long Term Portfolio', 'Core holdings (fictional).', 1),
+(2, 'Trading Portfolio',   'Short-term positions (fictional).', 1);
+
+INSERT INTO `stock_transactions`
+  (`id`, `portfolio_id`, `security_id`, `transaction_type`, `transaction_date`, `units`, `price_per_unit`, `gross_amount`, `fees`, `tax`, `net_amount`, `financial_account_id`, `reference`, `notes`) VALUES
+(1, 1, 1, 'BUY',           '2025-07-12', 800.0000, 250.0000, 200000.00, 200.00, 0.00,    200200.00, 5, 'DEMO-001', 'Initial holding (fictional).'),
+(2, 1, 1, 'SELL',          '2025-08-20', 200.0000, 300.0000,  60000.00, 150.00, 75.00,  -59775.00, 5, 'DEMO-002', 'Partial sale (fictional).'),
+(3, 1, 1, 'BONUS',         '2025-09-15',  60.0000,   0.0000,      0.00,   0.00, 0.00,        0.00, NULL, 'DEMO-003', '10% bonus shares (fictional).'),
+(4, 1, 1, 'CASH_DIVIDEND', '2025-09-30',   0.0000,   0.0000,   6000.00,   0.00, 0.00,    -6000.00, 5, 'DEMO-004', 'Cash dividend (fictional).'),
+(5, 1, 3, 'BUY',           '2025-08-05', 200.0000, 500.0000, 100000.00, 100.00, 0.00,    100100.00, 5, 'DEMO-005', 'Microfinance purchase (fictional).'),
+(6, 1, 3, 'STOCK_DIVIDEND','2025-09-10',  20.0000,   0.0000,      0.00,   0.00, 0.00,        0.00, NULL, 'DEMO-006', 'Stock dividend (fictional).');
+
+INSERT INTO `corporate_actions`
+  (`id`, `security_id`, `portfolio_id`, `action_type`, `action_date`, `ratio_from`, `ratio_to`, `dividend_per_share`, `units_basis`, `amount`, `stock_transaction_id`, `notes`) VALUES
+(1, 1, 1, 'bonus',         '2025-09-15', 10.0000, 1.0000, NULL,  600.0000, NULL,   3, '10% bonus (fictional).'),
+(2, 1, 1, 'cash_dividend', '2025-09-30', NULL,    NULL,   10.0000, 600.0000, 6000.00, 4, 'NPR 10/share on 600 units (fictional).'),
+(3, 3, 1, 'bonus',         '2025-09-10', 10.0000, 1.0000, NULL,  200.0000, NULL,   6, '10% stock dividend (fictional).');
+
+-- -----------------------------------------------------------------------------
+-- Budgets, recurring transactions, goals, tags
+-- -----------------------------------------------------------------------------
+INSERT INTO `budgets` (`id`, `name`, `period_year`, `period_month`, `status`, `notes`) VALUES
+(1, 'Budget 2025-08', 2025, 8, 'active', 'Demo monthly budget (fictional).');
+
+INSERT INTO `budget_items` (`budget_id`, `category_id`, `amount`) VALUES
+(1, 14, 15000.00),
+(1, 15, 10000.00),
+(1, 18,  5000.00);
+
+INSERT INTO `recurring_transactions`
+  (`id`, `transaction_type`, `category_id`, `financial_account_id`, `to_account_id`, `amount`, `frequency`, `next_date`, `end_date`, `mode`, `is_active`, `notes`) VALUES
+(1, 'income',  1,  2, NULL, 250000.00, 'monthly', '2025-11-01', NULL, 'reminder', 1, 'Monthly consulting retainer (fictional).'),
+(2, 'expense', 12, 2, NULL,  45000.00, 'monthly', '2025-11-05', NULL, 'reminder', 1, 'Office rent (fictional).'),
+(3, 'transfer',NULL, 2,    5,  50000.00, 'monthly', '2025-11-10', NULL, 'reminder', 1, 'Monthly investment contribution to broker (fictional).');
+
+INSERT INTO `goals` (`id`, `name`, `target_amount`, `current_amount`, `target_date`, `financial_account_id`, `status`, `notes`) VALUES
+(1, 'Emergency Fund', 500000.00, 180000.00, '2026-06-30', 3, 'active', 'Six months of expenses (fictional).'),
+(2, 'New Laptop',     250000.00,  60000.00, '2026-03-31', NULL, 'active', 'Demo savings goal (fictional).');
+
+INSERT INTO `tags` (`id`, `name`, `slug`, `color`) VALUES
+(1, 'Personal', 'personal', '#0F172A'),
+(2, 'Project',  'project',  '#A16207'),
+(3, 'Travel',   'travel',   '#2563EB'),
+(4, 'Family',   'family',   '#16A34A'),
+(5, 'College',  'college',  '#7C3AED');
+
+INSERT INTO `transaction_tags` (`tag_id`, `transaction_type`, `transaction_id`) VALUES
+(1, 'income',  1),
+(2, 'expense', 1),
+(1, 'expense', 3);
+
+-- -----------------------------------------------------------------------------
+-- Effective-dated fee rules (DEMO values - verify before production use)
+-- -----------------------------------------------------------------------------
+INSERT INTO `fee_rules` (`id`, `name`, `transaction_context`, `calculation_type`, `rate`, `fixed_amount`, `min_amount`, `max_amount`, `effective_from`, `effective_to`, `is_active`, `notes`) VALUES
+(1, 'Broker Commission (demo)', 'buy',  'percentage', 0.4000, NULL,  NULL, NULL, '2024-01-01', NULL, 1, 'DEMO illustration only - verify current NEPSE/SEBON rates.'),
+(2, 'SEBON Fee (demo)',         'buy',  'percentage', 0.0150, NULL, 10.00, NULL, '2024-01-01', NULL, 1, 'DEMO illustration only - verify current regulatory value.'),
+(3, 'DP Charge (demo)',         'sell', 'fixed',      NULL,   25.00, NULL, NULL, '2024-01-01', NULL, 1, 'DEMO illustration only - verify current regulatory value.');
+
+-- -----------------------------------------------------------------------------
+-- Reconciliation record (fictional)
+-- -----------------------------------------------------------------------------
+INSERT INTO `reconciliations` (`id`, `financial_account_id`, `statement_date`, `statement_balance`, `system_balance`, `difference`, `status`, `notes`) VALUES
+(1, 2, '2025-09-30', 150000.00, 150000.00, 0.00, 'balanced', 'Demo reconciliation (fictional).');
+
+-- -----------------------------------------------------------------------------
+-- Configurable classification options
+-- -----------------------------------------------------------------------------
+INSERT INTO `classification_options` (`group_key`, `label`, `slug`, `is_active`, `sort_order`) VALUES
+('stock_term','Short Term','short-term',1,10),
+('stock_term','Medium Term','medium-term',1,20),
+('stock_term','Long Term','long-term',1,30),
+('stock_term','Trading','trading',1,40),
+('business_type','Technology','technology',1,10),
+('business_type','Retail','retail',1,20),
+('business_type','Manufacturing','manufacturing',1,30),
+('business_type','Services','services',1,40),
+('investment_model','Equity','equity',1,10),
+('investment_model','Debt','debt',1,20),
+('investment_model','Profit Sharing','profit-sharing',1,30),
+('loan_type','Term Loan','term-loan',1,10),
+('loan_type','Bridge Loan','bridge-loan',1,20),
+('loan_type','Personal Loan','personal-loan',1,30),
+('repayment_frequency','Monthly','monthly',1,10),
+('repayment_frequency','Quarterly','quarterly',1,20),
+('repayment_frequency','Yearly','yearly',1,30),
+('repayment_frequency','One-Time','one-time',1,40),
+('collateral_type','Property','property',1,10),
+('collateral_type','Gold','gold',1,20),
+('collateral_type','Shares','shares',1,30),
+('collateral_type','Unsecured','unsecured',1,40),
+('property_type','Residential','residential',1,10),
+('property_type','Commercial','commercial',1,20),
+('property_type','Land','land',1,30),
+('ownership_type','Freehold','freehold',1,10),
+('ownership_type','Leasehold','leasehold',1,20),
+('ownership_type','Joint','joint',1,30);
+
+-- -----------------------------------------------------------------------------
+-- Benchmark (schema-ready; advanced feature)
+-- -----------------------------------------------------------------------------
+INSERT INTO `benchmarks` (`id`, `name`, `description`, `source`, `is_active`) VALUES
+(1, 'NEPSE Index', 'Nepal Stock Exchange index (manual/CSV import).', 'manual', 1);
+
+INSERT INTO `benchmark_prices` (`benchmark_id`, `price_date`, `value`) VALUES
+(1, '2025-09-30', 2100.0000),
+(1, '2025-10-01', 2115.5000);

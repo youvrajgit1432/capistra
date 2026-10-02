@@ -69,7 +69,12 @@ if (!function_exists('ledger_post_entry')) {
     {
         ledger_validate_balance($lines);
 
-        $pdo->beginTransaction();
+        // Only manage a transaction when the caller has not already started one
+        // (e.g. transfers wrap several writes in a single transaction).
+        $ownsTransaction = !$pdo->inTransaction();
+        if ($ownsTransaction) {
+            $pdo->beginTransaction();
+        }
         try {
             $stmt = $pdo->prepare(
                 'INSERT INTO journal_entries (entry_date, reference, memo, source_type, source_id, status, created_by)
@@ -100,10 +105,14 @@ if (!function_exists('ledger_post_entry')) {
                 ]);
             }
 
-            $pdo->commit();
+            if ($ownsTransaction) {
+                $pdo->commit();
+            }
             return $entryId;
         } catch (Throwable $e) {
-            $pdo->rollBack();
+            if ($ownsTransaction && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             throw $e;
         }
     }

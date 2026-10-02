@@ -2,34 +2,89 @@
 declare(strict_types=1);
 
 /**
- * Capistra - shared accounting layout (sidebar + topbar + content shell).
+ * Capistra - shared layout (sidebar + topbar + content shell).
  * Implements design-system/.../MASTER.md (Minimalism / Swiss, IBM Plex Sans).
+ *
+ * Navigation is FEATURE-AWARE: modules disabled in Settings -> Modules are
+ * hidden here, and the pages themselves also guard direct URL access via
+ * `capistra_guard_module()`.
  */
 
+require_once dirname(__DIR__, 2) . '/config/features.php';
+
+if (!function_exists('capistra_url')) {
+    /** Build a root-relative application URL that respects the install path. */
+    function capistra_url(string $path = ''): string
+    {
+        $base = defined('APP_URL') ? rtrim((string) APP_URL, '/') : '';
+        return $base . '/' . ltrim($path, '/');
+    }
+}
+
 if (!function_exists('capistra_nav_items')) {
+    /**
+     * @return array<string, array<string,string>> group => [href => label]
+     */
     function capistra_nav_items(): array
     {
-        return [
+        $nav = [
             'Overview' => [
-                'index.php'         => 'Finance Command Center',
-                'planner.php'       => 'Scenario Planner',
+                'accounting/index.php' => 'Finance Command Center',
+                'accounting/planner.php' => 'Scenario Planner',
             ],
             'Accounting' => [
-                'chart-of-accounts.php' => 'Chart of Accounts',
-                'journal.php'           => 'Journal Entries',
-                'general-ledger.php'    => 'General Ledger',
-                'trial-balance.php'     => 'Trial Balance',
-                'profit-loss.php'       => 'Profit & Loss',
-                'balance-sheet.php'     => 'Balance Sheet',
-                'cash-flow.php'         => 'Cash Flow',
-                'ledger-sync.php'       => 'Income/Expense Sync',
+                'accounting/chart-of-accounts.php' => 'Chart of Accounts',
+                'accounting/journal.php' => 'Journal Entries',
+                'accounting/general-ledger.php' => 'General Ledger',
+                'accounting/trial-balance.php' => 'Trial Balance',
+                'accounting/profit-loss.php' => 'Profit & Loss',
+                'accounting/balance-sheet.php' => 'Balance Sheet',
+                'accounting/cash-flow.php' => 'Cash Flow',
+                'accounting/ledger-sync.php' => 'Income/Expense Sync',
             ],
         ];
+
+        // Personal finance (only enabled modules).
+        $personal = [];
+        if (capistra_feature_enabled('net_worth'))     { $personal['admin/finance/index.php'] = 'Net Worth & Overview'; }
+        if (capistra_feature_enabled('budgeting'))     { $personal['admin/finance/budgets.php'] = 'Budgets'; }
+        if (capistra_feature_enabled('recurring'))     { $personal['admin/finance/recurring.php'] = 'Recurring Transactions'; }
+        if (capistra_feature_enabled('goals'))         { $personal['admin/finance/goals.php'] = 'Goals'; }
+        $personal['admin/finance/transfers.php'] = 'Transfers';
+        if (capistra_feature_enabled('reconciliation')){ $personal['admin/finance/reconcile.php'] = 'Reconciliation'; }
+        if (capistra_feature_enabled('tags'))          { $personal['admin/finance/tags.php'] = 'Tags'; }
+        if ($personal !== []) { $nav['Personal Finance'] = $personal; }
+
+        // Investments.
+        $invest = [];
+        if (capistra_feature_enabled('stocks')) {
+            $invest['admin/investment/portfolio.php'] = 'Stock Portfolio';
+            $invest['admin/investment/stock-transactions.php'] = 'Stock Transactions';
+            $invest['admin/investment/corporate-actions.php'] = 'Corporate Actions';
+        }
+        if (capistra_feature_enabled('market_data')) { $invest['admin/investment/prices.php'] = 'Market Prices'; }
+        if ($invest !== []) { $nav['Investments'] = $invest; }
+
+        // Data.
+        if (capistra_feature_enabled('data_import')) {
+            $nav['Data'] = ['admin/settings/data.php' => 'Import / Export'];
+        }
+
+        // Settings.
+        $nav['Settings'] = ['admin/settings/index.php' => 'Settings Center'];
+
+        // Legacy modules (feature-gated where applicable).
+        $legacy = ['admin/index.php' => 'Income & Expenses'];
+        $legacy['admin/investment/index.php'] = 'Investments (Legacy)';
+        if (capistra_feature_enabled('investor_management')) { $legacy['admin/fund/fundmanagement.php'] = 'Investor & Funds'; }
+        $nav['Legacy Modules'] = $legacy;
+
+        return $nav;
     }
 }
 
 if (!function_exists('capistra_layout_header')) {
-    function capistra_layout_header(string $title, string $active, string $base = '.'): void
+    function capistra_layout_header(string $title, string $active, string $base = '..'): void
     {
         $user = capistra_current_user();
         ?><!DOCTYPE html>
@@ -37,10 +92,10 @@ if (!function_exists('capistra_layout_header')) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title><?= e($title) ?> &middot; <?= e(APP_NAME) ?></title>
+<title><?= e($title) ?> &middot; <?= e((string) capistra_setting('display_name', APP_NAME)) ?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap">
-<link rel="stylesheet" href="<?= e($base) ?>/assets/css/capistra.css">
+<link rel="stylesheet" href="<?= e(capistra_url('assets/css/capistra.css')) ?>">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -48,24 +103,19 @@ if (!function_exists('capistra_layout_header')) {
   <aside class="sidebar" id="sidebar" aria-label="Primary">
     <div class="sidebar__brand">
       <span class="mark" aria-hidden="true">C</span>
-      <span><?= e(APP_NAME) ?></span>
+      <span><?= e((string) capistra_setting('display_name', APP_NAME)) ?></span>
     </div>
     <nav aria-label="Sections">
       <?php foreach (capistra_nav_items() as $group => $items): ?>
         <div class="sidebar__group">
           <div class="sidebar__group-title"><?= e($group) ?></div>
           <?php foreach ($items as $href => $label): ?>
-            <a class="nav-link" href="<?= e($base . '/' . $href) ?>"
-               <?= $href === $active ? 'aria-current="page"' : '' ?>><?= e($label) ?></a>
+            <?php $isActive = ($active === $href) || (basename($href) === $active); ?>
+            <a class="nav-link" href="<?= e(capistra_url($href)) ?>"
+               <?= $isActive ? 'aria-current="page"' : '' ?>><?= e($label) ?></a>
           <?php endforeach; ?>
         </div>
       <?php endforeach; ?>
-      <div class="sidebar__group">
-        <div class="sidebar__group-title">Legacy Modules</div>
-        <a class="nav-link" href="<?= e($base) ?>/../admin/index.php">Income &amp; Expenses</a>
-        <a class="nav-link" href="<?= e($base) ?>/../admin/investment/index.php">Investments</a>
-        <a class="nav-link" href="<?= e($base) ?>/../admin/fund/index.php">Investor &amp; Funds</a>
-      </div>
     </nav>
   </aside>
   <div class="scrim" data-open="false" id="scrim" hidden></div>
@@ -74,9 +124,9 @@ if (!function_exists('capistra_layout_header')) {
       <button class="btn btn--secondary btn--sm topbar__toggle" id="sidebarToggle" aria-controls="sidebar" aria-expanded="false">Menu</button>
       <span class="topbar__title"><?= e($title) ?></span>
       <span class="topbar__spacer"></span>
-      <span class="badge"><?= e(APP_BASE_CURRENCY) ?></span>
+      <span class="badge"><?= e(capistra_base_currency()) ?></span>
       <?php if ($user): ?><span class="badge"><?= e($user['full_name']) ?></span><?php endif; ?>
-      <a class="btn btn--secondary btn--sm" href="<?= e($base) ?>/../admin/logout.php">Sign out</a>
+      <a class="btn btn--secondary btn--sm" href="<?= e(capistra_url('admin/logout.php')) ?>">Sign out</a>
     </header>
     <main class="content" id="main-content">
 <?php
@@ -122,5 +172,22 @@ if (!function_exists('capistra_amount')) {
             return '<span class="amount ' . ($colour ? 'amount--neg' : '') . '">(' . e($formatted) . ')</span>';
         }
         return '<span class="amount ' . ($colour ? 'amount--pos' : '') . '">' . e($formatted) . '</span>';
+    }
+}
+
+if (!function_exists('capistra_section_tabs')) {
+    /**
+     * Render a tab bar for the Settings Center and similar multi-page hubs.
+     *
+     * @param array<string,string> $tabs  href => label
+     */
+    function capistra_section_tabs(array $tabs, string $active): void
+    {
+        echo '<div class="tabs" role="tablist">';
+        foreach ($tabs as $href => $label) {
+            $isActive = basename($href) === basename($active) || $href === $active;
+            echo '<a class="tab" role="tab" href="' . e($href) . '"' . ($isActive ? ' aria-current="page"' : '') . '>' . e($label) . '</a>';
+        }
+        echo '</div>';
     }
 }

@@ -75,6 +75,7 @@ backups/
 !database/schema.sql
 !database/demo_seed.sql
 !database/seed/*.sql
+!database/migrations/*.sql
 
 # ---- Logs / runtime -------------------------------------------------------
 logs/

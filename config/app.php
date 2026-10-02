@@ -101,18 +101,26 @@ if (!function_exists('capistra_mysqli')) {
 if (!function_exists('capistra_currency')) {
     /**
      * Format an amount using the configured base currency.
-     * Locale-aware formatting is intentionally simple and predictable.
+     *
+     * Delegates to the settings-aware formatter (config/settings.php) so the
+     * currency, symbol style, grouping and precision all come from one place.
+     * Falls back to a small built-in formatter before settings are loaded.
      */
-    function capistra_currency(float|int|string $amount, string $code = APP_BASE_CURRENCY): string
+    function capistra_currency(float|int|string $amount, ?string $code = null): string
     {
-        $value = number_format((float) $amount, 2);
+        if (function_exists('capistra_money')) {
+            return capistra_money($amount, $code);
+        }
 
-        return match (strtoupper($code)) {
+        $value = number_format((float) $amount, 2);
+        $code  = strtoupper($code ?? APP_BASE_CURRENCY);
+
+        return match ($code) {
             'NPR'   => 'Rs. ' . $value,
             'USD'   => '$' . $value,
             'EUR'   => '€' . $value,
             'GBP'   => '£' . $value,
-            default => $value . ' ' . strtoupper($code),
+            default => $value . ' ' . $code,
         };
     }
 }

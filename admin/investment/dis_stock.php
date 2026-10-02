@@ -357,18 +357,23 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Auto-refresh every 5 minutes (300,000 ms)
-    setInterval(refreshData, 300000);
-    
-    // Initial check if data needs refresh
+    // Market data is refreshed ONLY when the operator clicks "Refresh Prices".
+    // This page used to scrape the upstream site automatically on load (and every
+    // 5 minutes), which re-pointed the cached prices at live third-party data and
+    // reloaded the page. Viewing a page must never trigger an outbound request or
+    // overwrite cached data.
     checkDataFreshness();
-    
+
     function checkDataFreshness() {
         fetch('check_data_freshness.php')
             .then(response => response.json())
             .then(data => {
                 if (data.seconds_since_update > 300) { // 5 minutes
-                    refreshData();
+                    refreshStatus.style.display = 'block';
+                    refreshStatus.innerHTML =
+                        '<i class="fas fa-clock text-warning" ' +
+                        'title="Cached prices are older than 5 minutes. ' +
+                        'Click Refresh Prices to fetch new data."></i>';
                 }
             })
             .catch(error => console.error('Freshness check error:', error));

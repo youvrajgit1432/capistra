@@ -105,7 +105,7 @@ function scrapeStockData() {
     return $data;
 }
 
-function storeStockData($data, $dbConfig) {
+function storeStockData($data) {
     if (empty($data)) {
         throw new Exception("No data provided for storage");
     }
@@ -179,7 +179,7 @@ try {
     
     // Step 2: Store data
     echo "Storing data in database...\n";
-    $inserted = storeStockData($stockData, $dbConfig);
+    $inserted = storeStockData($stockData);
     echo "Successfully inserted $inserted records\n";
     
     // Log success

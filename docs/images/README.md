@@ -26,6 +26,15 @@ generated demo data.
 | `16-cash-flow.png` | Cash flow | 1440 × 900 |
 | `15-mobile-dashboard.png` | Dashboard (mobile) | 390 × 844 |
 
+## How these were captured
+
+Each image is a distinct capture of the **running application** (a local XAMPP
+serve of the documented install) taken with headless system Chrome driven over
+the DevTools Protocol. The session cookie was attached per navigation, and the
+driver **aborts rather than saving an image** if an authenticated page falls back
+to the login screen — so a screenshot can never silently be the wrong page. All
+16 files have unique content.
+
 ## Rules
 
 - Desktop captures use a **1440 × 900** viewport; the mobile capture uses

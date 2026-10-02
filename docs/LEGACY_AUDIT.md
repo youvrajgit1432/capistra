@@ -129,11 +129,14 @@ that page changes.
 | Concern | Finding |
 |---|---|
 | Is scraper output tracked? | **No.** `admin/dis/last_scraped.html`, `admin/dis/scrape.log`, `admin/dis/scrape_error.log`, `admin/investment/error.log` and `**/logs/` are all git-ignored, and `git ls-files` confirms none are tracked. |
-| Does the app depend on the scraper? | **No.** Every page reads the cached `stock_prices` / `security_prices` tables. No page-load path triggers a scrape. The only trigger is the explicit "refresh" action in `admin/investment/dis_stock.php`, which `fetch`es `../dis/scrape_and_store.php`. |
+| Does the app depend on the scraper? | **No.** Every page reads the cached `stock_prices` / `security_prices` tables. |
+| Does simply viewing a page trigger a scrape? | **Not any more — this was a real defect.** `admin/investment/dis_stock.php` used to call `checkDataFreshness()` on load and fire `refreshData()` whenever the cache was older than 5 minutes, plus a `setInterval(refreshData, 300000)`. Opening the stock page therefore made an outbound request to a third-party site, ran `TRUNCATE TABLE stock_prices` and reloaded the page. It is now **click-only**: the page still checks freshness, but only shows a "cached prices are stale" badge and tells the operator to press *Refresh Prices*. No outbound request and no cache overwrite can happen from a page view. |
+| Does anything else still call the scraper? | Only the explicit *Refresh Prices* button in `admin/investment/dis_stock.php`, which `fetch`es the guarded `../dis/scrape_and_store.php`. |
 | Do scraper failures break Capistra? | **No.** The refresh is an asynchronous `fetch`; a failure leaves the cached data in place. `get_last_update.php` and `check_data_freshness.php` return JSON and report `status: error` instead of fataling. |
 | Manual price entry still possible? | **Yes.** `admin/investment/prices.php` imports CSV via `capistra_record_price(..., source: 'manual')`, and `admin/settings/nepse.php` manages the securities master. |
 | Is price source / timestamp visible? | **Yes.** `security_prices.source` + `fetched_at` and `stock_prices.fetched_at` are shown by the prices/investment screens. |
-| Is the scrape endpoint safe? | **Now guarded** (admin session required, see §4). Previously `insert_to_db.php` could be triggered anonymously and it runs `DELETE FROM stock_prices` first. |
+| Is the scrape endpoint safe? | **Now guarded** (admin session required, see §4). Previously `insert_to_db.php` could be triggered anonymously and it runs `DELETE FROM stock_prices` first. Note the surviving refresh path is still **destructive by design**: an operator-triggered refresh `TRUNCATE`s `stock_prices` before inserting the new snapshot, so it replaces the cache rather than merging with it. |
+| Uninitialised-variable warning | `admin/dis/scrape_and_store.php` called `storeStockData($stockData, $dbConfig)` where `$dbConfig` no longer exists — a leftover from the removed bootstrap file. It emitted `PHP Warning: Undefined variable $dbConfig` on every real scrape. The unused parameter was removed; the function already obtains its connection via `capistra_mysqli()`. |
 | What is the documented label? | **Experimental / optional market-data helper** — presented as cached, unverified data, never as authoritative market data. |
 | Remaining limitation | `admin/investment/cron_scrape.php` requires an authenticated session, so it is not a true headless cron entry point. Recommended: run a Windows scheduled task against the guarded endpoint while signed in, or import a CSV. |
 
@@ -173,7 +176,26 @@ These are intentional and are not defects:
 | **404** | the removed legacy routes in §3 | route no longer exists |
 | **501** | PDF export paths (`?export_pdf` on the dashboard, income and expense screens, `admin/fund/process/export_pdf.php`) and the OTP mail senders | the optional Composer package (`setasign/fpdf` / `phpmailer/phpmailer`) is not installed. These used to throw an uncaught `Class not found` error and become **HTTP 500**; they now return a clear message instead, staying consistent with the promise that Capistra runs without `vendor/`. |
 
-## 10. Deferred / recommended follow-up
+## 10. Legacy branding removed from rendered layouts
+
+The privacy pass removed the old company names from the data, but three
+**rendered** strings survived in tracked templates and were visible in the
+running app (they show up in the Income, Expense and Investment screenshots):
+
+| File | Was | Now |
+|---|---|---|
+| `admin/head/header.php` | sidebar brand `Global tech` | `Capistra` |
+| `admin/service/head/header.php` | sidebar brand `Global tech` and the AdminLTE `<title>` | `Capistra` |
+| `admin/investment/edit_stock.php` | inline sidebar logo `Global Tech` | `Capistra` |
+| `protect/verifyOtp.php` | page title `Verify OTP - Global Investment Admin` | page title `Verify OTP \| Capistra` |
+
+No remaining `Global …` brand string exists in any tracked PHP/HTML/CSS/JS file.
+The one other match, `Global IME Bank Limited` in the legacy
+`admin/investment/assets/js/stock.js`, is a real listed company in the historic
+reference list — see §7 — not branding, and it is never presented as verified
+data.
+
+## 11. Deferred / recommended follow-up
 
 1. Consolidate `protect/login_process.php` with the inline login handler in `index.php`.
 2. Replace the legacy `stock.js` picker in `admin/investment/stock.php` with the `securities` master.

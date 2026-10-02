@@ -1,8 +1,8 @@
 # Product naming research
 
-The original internal branding (`GMIC`, *Capistra*,
-*Capistra*) is company-specific and must not appear in
-the public product. This document records the rename research and the decision.
+The original internal branding (`GMIC`) was company-specific and must not appear
+in the public product. This document records the rename research and the
+decision. The original legal entity name is deliberately not reproduced here.
 
 ## Requirements
 

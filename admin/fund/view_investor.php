@@ -138,7 +138,7 @@ $investor = $result->fetch_assoc();
     <div class="header">
        
         <h1>Capistra</h1>
-        <p> Company address (configure in Settings) | PAN: 123456789</p>
+        <p>Company address (configure in Settings)</p>
         <hr>
     </div>
 
@@ -248,7 +248,7 @@ $investor = $result->fetch_assoc();
             doc.setFontSize(20);
             doc.text("Capistra", 10, 15);
             doc.setFontSize(12);
-            doc.text("Company address (configure in Settings) | PAN: (configure in Settings)", 10, 25);
+            doc.text("Tax ID: (configure in Settings)", 10, 25);
             doc.line(10, 30, 200, 30); // Horizontal line
 
             // Add title

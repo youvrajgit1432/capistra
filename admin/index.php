@@ -37,8 +37,8 @@ if (isset($_GET['export_pdf'])) {
     $pdf->SetTextColor(108, 117, 125); // Gray color for the address
     $pdf->Cell(0, 10, 'Company address (configure in Settings)', 0, 1, 'C');
     $pdf->SetFont('Arial', 'I', 14);
-    $pdf->SetTextColor(255, 99, 71); // Coral color for the PAN
-    $pdf->Cell(0, 10, 'PAN No: (configure in Settings)', 0, 1, 'C');
+    $pdf->SetTextColor(255, 99, 71); // Coral color for the tax id
+    $pdf->Cell(0, 10, 'Tax ID: (configure in Settings)', 0, 1, 'C');
     $pdf->Ln(15); // Add vertical space
 
     // Add Divider Line
@@ -100,7 +100,7 @@ if (isset($_GET['export_pdf'])) {
     $pdf->SetFillColor(0, 128, 128); // Teal background for the footer
     $pdf->SetTextColor(255, 255, 255); // White text color
     $pdf->Cell(0, 10, 'Generated on: ' . date('Y-m-d H:i:s'), 0, 1, 'C', true);
-    $pdf->Cell(0, 10, 'Capistra | PAN No: (configure in Settings)', 0, 1, 'C', true);
+    $pdf->Cell(0, 10, 'Capistra', 0, 1, 'C', true);
 
     // Output PDF with dynamic file name
     $pdf->Output('D', 'financial_report_' . $currentYear . '.pdf'); // Download the PDF

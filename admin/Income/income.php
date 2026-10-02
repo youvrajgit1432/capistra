@@ -93,10 +93,10 @@ if (isset($_GET['export_pdf'])) {
     $pdf->Cell(0, 10, 'Capistra', 0, 1, 'C');
     $pdf->SetFont('Arial', '', 14);
     $pdf->SetTextColor(85, 85, 85); // Dark gray color for the address
-    $pdf->Cell(0, 10, 'Company address (configure in Settings)', 0, 1, 'C');
+    $pdf->Cell(0, 10, (string) capistra_setting('company_address', ''), 0, 1, 'C');
     $pdf->SetFont('Arial', 'I', 14);
-    $pdf->SetTextColor(220, 53, 69); // Red color for the PAN
-    $pdf->Cell(0, 10, 'PAN No: (configure in Settings)', 0, 1, 'C');
+    $pdf->SetTextColor(220, 53, 69); // Red color for the tax id
+    $pdf->Cell(0, 10, trim('Tax ID: ' . (string) capistra_setting('company_tax_id', '')), 0, 1, 'C');
     $pdf->Ln(15); // Add vertical space
 
     // Add Divider Line
@@ -164,7 +164,7 @@ if (isset($_GET['export_pdf'])) {
     $pdf->SetFillColor(0, 102, 102); // Dark teal background for the footer
     $pdf->SetTextColor(255, 255, 255); // White text color
     $pdf->Cell(0, 10, 'Generated on: ' . date('Y-m-d H:i:s'), 0, 1, 'C', true);
-    $pdf->Cell(0, 10, 'Capistra | PAN No: (configure in Settings)', 0, 1, 'C', true);
+    $pdf->Cell(0, 10, trim('Capistra | Tax ID: ' . (string) capistra_setting('company_tax_id', '')), 0, 1, 'C', true);
 
     // Output PDF
     $pdf->Output('D', 'income_report.pdf'); // Download the PDF

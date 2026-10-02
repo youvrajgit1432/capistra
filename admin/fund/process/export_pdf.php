@@ -40,8 +40,8 @@ if (isset($_GET['id'])) {
         $pdf->SetTextColor(85, 85, 85); // Dark gray color for the address
         $pdf->Cell(0, 10, 'Company address (configure in Settings)', 0, 1, 'C');
         $pdf->SetFont('Arial', 'I', 14);
-        $pdf->SetTextColor(220, 53, 69); // Red color for the PAN
-        $pdf->Cell(0, 10, 'PAN No: (configure in Settings)', 0, 1, 'C');
+        $pdf->SetTextColor(220, 53, 69); // Red color for the tax id
+        $pdf->Cell(0, 10, 'Tax ID: (configure in Settings)', 0, 1, 'C');
         $pdf->Ln(15); // Add vertical space
 
         // Add Divider Line

@@ -132,19 +132,12 @@
     <section class="testimonials" id="testimonials">
         <div class="section-header">
             <h3>What Our Clients Say</h3>
-            <p>Don't just take our word for it. Here's what our clients have to say about our platform.</p>
+            <p>Capistra is an open-source, self-hosted project. It does not publish customer testimonials.</p>
         </div>
         <div class="testimonial-slider">
             <div class="testimonial">
                 <div class="testimonial-content">
-                    "Capistra's financial management software has transformed how we handle our company finances. The investment tracking features alone have saved us countless hours each month."
-                </div>
-                <div class="testimonial-author">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Doe" class="author-avatar">
-                    <div class="author-info">
-                        <h5>John Doe</h5>
-                        <p>CFO, TechCorp Inc.</p>
-                    </div>
+                    Capistra grew out of an early PHP/MySQL learning project and is shared here for learning, experimentation and further development.
                 </div>
             </div>
         </div>
@@ -154,7 +147,7 @@
     <section class="cta" id="contact">
         <div class="cta-content">
             <h3>Ready to Transform Your Financial Management?</h3>
-            <p>Join hundreds of companies who trust Capistra with their financial operations. Get started today with a free demo.</p>
+            <p>Clone the repository, import the demo database and explore the accounting, cash-flow and investment features for yourself.</p>
             <a href="index.php" class="cta-button" id="cta-login-button">Get Started Now</a>
         </div>
     </section>
@@ -164,7 +157,7 @@
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>Capistra</h4>
-                <p>Empowering businesses with comprehensive financial management solutions since 2010.</p>
+                <p>A self-hosted accounting, cash-flow and investment management project, open for learning and further development.</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>

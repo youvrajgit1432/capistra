@@ -32,6 +32,11 @@ $_SESSION['last_otp_time'] = time(); // Update last OTP time
 $email = $_SESSION['temp_user']['email'];
 
 // Send the new OTP via email
+// Email needs the optional composer package; fail safely without it.
+if (!class_exists(PHPMailer::class)) {
+    capistra_optional_class_missing('PHPMailer', 'phpmailer/phpmailer');
+}
+
 $mail = new PHPMailer(true);
 
 try {

@@ -10,7 +10,6 @@ The full text of each license ships with the component (e.g. inside `vendor/`).
 |---------|---------|---------|
 | `phpmailer/phpmailer` | Optional email (OTP/notifications) | LGPL-2.1-or-later |
 | `setasign/fpdf` | PDF report generation | FPDF License (permissive, no warranty) |
-| `google/apiclient` | Optional Google integration | Apache-2.0 |
 
 ## Front-end / bundled assets
 

@@ -5,6 +5,11 @@ session_start(); // Start the session
 // Include Composer autoloader
 require_once __DIR__ . '/../../../config/autoload.php';
 
+// PDF export needs the optional composer package; fail safely without it.
+if (!class_exists('FPDF')) {
+    capistra_optional_class_missing('FPDF', 'setasign/fpdf');
+}
+
 // Include DB connection
 include('../../config/dbcon.php');
 

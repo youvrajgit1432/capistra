@@ -15,6 +15,11 @@ if (!isset($_SESSION['temp_user']) || !isset($_SESSION['signup_otp'])) {
 $email = $_SESSION['temp_user']['email'];
 $otp = $_SESSION['signup_otp'];
 
+// Email needs the optional composer package; fail safely without it.
+if (!class_exists(PHPMailer::class)) {
+    capistra_optional_class_missing('PHPMailer', 'phpmailer/phpmailer');
+}
+
 // Create a new PHPMailer instance for email
 $mail = new PHPMailer(true);
 

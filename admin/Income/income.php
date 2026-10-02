@@ -37,6 +37,11 @@ function formatNepaliCurrency($amount) {
 
 // Handle PDF Export
 if (isset($_GET['export_pdf'])) {
+    // PDF export needs the optional composer package; fail safely without it.
+    if (!class_exists('FPDF')) {
+        capistra_optional_class_missing('FPDF', 'setasign/fpdf');
+    }
+
     // Fetch the current month and year
     $currentMonth = date('m');
     $currentYear = date('Y');

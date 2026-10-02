@@ -162,7 +162,18 @@ now-removed dev script `admin/config/table.php`). The table is now part of
 `database/schema.sql`, with a demo row in `database/demo_seed.sql` for the
 profit-sharing demo investor. Fresh imports now create **49** tables.
 
-## 9. Deferred / recommended follow-up
+## 9. Documented non-2xx responses
+
+These are intentional and are not defects:
+
+| Response | Route | Reason |
+|---|---|---|
+| **302** to the login page | every guarded legacy route | anonymous request to an authenticated area |
+| **403** | `scheduler.php` | CLI-only long-running service; must never run under a web request |
+| **404** | the removed legacy routes in §3 | route no longer exists |
+| **501** | PDF export paths (`?export_pdf` on the dashboard, income and expense screens, `admin/fund/process/export_pdf.php`) and the OTP mail senders | the optional Composer package (`setasign/fpdf` / `phpmailer/phpmailer`) is not installed. These used to throw an uncaught `Class not found` error and become **HTTP 500**; they now return a clear message instead, staying consistent with the promise that Capistra runs without `vendor/`. |
+
+## 10. Deferred / recommended follow-up
 
 1. Consolidate `protect/login_process.php` with the inline login handler in `index.php`.
 2. Replace the legacy `stock.js` picker in `admin/investment/stock.php` with the `securities` master.

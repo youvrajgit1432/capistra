@@ -166,7 +166,8 @@ Statuses reflect what the current source actually supports.
 - **Bootstrap / AdminLTE** for the legacy admin areas; a newer design-system-based
   CSS layer (`assets/css/capistra.css`) for the accounting module
 - **Composer** for optional packages only: `phpmailer/phpmailer`,
-  `setasign/fpdf`, `google/apiclient`
+  `setasign/fpdf` (the app runs without `vendor/`; PDF export and email are the
+  only features that need them)
 
 There is no Laravel/Symfony/etc. in this project.
 

@@ -7,6 +7,11 @@ require_once __DIR__ . '/../lib/admin.php';
 
 // Handle PDF Export
 if (isset($_GET['export_pdf'])) {
+    // PDF export needs the optional composer package; fail safely without it.
+    if (!class_exists('FPDF')) {
+        capistra_optional_class_missing('FPDF', 'setasign/fpdf');
+    }
+
     // Include DB connection
     include('../config/dbcon.php');
 

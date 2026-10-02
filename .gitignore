@@ -1,0 +1,107 @@
+# =============================================================================
+# Capistra - public repository .gitignore
+# Privacy first: no credentials, no real uploaded documents, no DB backups.
+# =============================================================================
+
+# ---- Environment / secrets ------------------------------------------------
+.env
+.env.*
+!.env.example
+/config.local.php
+/config/config.local.php
+includes/config.ini
+**/config.ini
+*.pem
+*.key
+*.crt
+*.p12
+id_rsa*
+
+# ---- Composer -------------------------------------------------------------
+/vendor/
+**/vendor/
+
+# ---- Private uploads (keep the directories, never the contents) ----------
+admin/uploads/*
+!admin/uploads/.gitkeep
+admin/Income/uploads/*
+!admin/Income/uploads/.gitkeep
+admin/Expense/uploads/*
+!admin/Expense/uploads/.gitkeep
+admin/assets/uploads/*
+!admin/assets/uploads/.gitkeep
+admin/clients_dis/sections/uploads/*
+!admin/clients_dis/sections/uploads/.gitkeep
+admin/agreements/*
+!admin/agreements/.gitkeep
+admin/Iinvestment/uploads/*
+!admin/Iinvestment/uploads/.gitkeep
+admin/investment/uploads/*
+!admin/investment/uploads/.gitkeep
+admin/investment/data/*
+!admin/investment/data/.gitkeep
+admin/investment/logs/*
+!admin/investment/logs/.gitkeep
+admin/fund/agreements/*
+!admin/fund/agreements/.gitkeep
+admin/employee/resumes/*
+!admin/employee/resumes/.gitkeep
+**/profile_images/*
+!**/profile_images/.gitkeep
+**/employee_photos/*
+!**/employee_photos/.gitkeep
+
+# ---- Legacy KYC / registration / credential-vault modules --------------
+# Excluded from the public edition. These areas handled citizenship/KYC
+# documents and third-party login credentials. They are preserved only in the
+# private off-repo backup - never published.
+admin/clients/
+admin/clients_dis/
+clients-dis/
+admin/reg/
+admin/agreements/
+**/config/encryption.php
+
+# ---- Legacy company / personal brand assets ------------------------------
+admin/assets/dist/img/director.jpg
+admin/customer/logo.png
+
+# ---- Private database dumps / backups ------------------------------------
+database/gmic.sql
+database/private/
+database/backups/
+backups/
+*.sql
+!database/schema.sql
+!database/demo_seed.sql
+!database/seed/*.sql
+
+# ---- Logs / runtime -------------------------------------------------------
+logs/
+**/logs/
+*.log
+error.log
+/tmp/
+/storage/
+**/sessions/
+*.session
+
+# ---- Generated reports / exports -----------------------------------------
+report_*.pdf
+**/generated/*.pdf
+*.csv.tmp
+exports/*.csv
+
+# ---- OS / editor ----------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
+
+# ---- Build / cache --------------------------------------------------------
+/node_modules/
+/.cache/
+*.cache

@@ -1,0 +1,20 @@
+{
+    "name": "capistra/capistra",
+    "description": "Self-hosted Accounting, Cash-Flow & Investment Management Platform",
+    "type": "project",
+    "license": "MIT",
+    "keywords": ["accounting", "finance", "cash-flow", "investment", "self-hosted", "double-entry"],
+    "require": {
+        "php": ">=8.0",
+        "setasign/fpdf": "^1.8",
+        "phpmailer/phpmailer": "^6.10",
+        "google/apiclient": "2.0"
+    },
+    "scripts": {
+        "lint": "find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
+        "test": "php tests/run-tests.php"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

@@ -1,13 +1,8 @@
 <?php
-// Start session securely
-if (session_status() === PHP_SESSION_NONE) {
-    session_start([
-        'cookie_lifetime' => 1800, // 30 minutes
-        'cookie_secure' => isset($_SERVER['HTTPS']), // Enable only on HTTPS
-        'cookie_httponly' => true,
-        'cookie_samesite' => 'Strict'
-    ]);
-}
+// Capistra - canonical session bootstrap (consistent session name + flags).
+require_once __DIR__ . '/config/app.php';
+require_once __DIR__ . '/config/session.php';
+capistra_session_start();
 
 // Check if user is already logged in
 if (isset($_SESSION['username'])) {
@@ -18,8 +13,9 @@ if (isset($_SESSION['username'])) {
 // Include database connection
 require_once('protect/db_connection.php');
 
-// Default credentials (remove in production)
-$defaultPassword = "ChangeMe@Example";
+// The legacy hardcoded default-password bypass has been removed.
+// Login always requires a verified password hash.
+$defaultPassword = null;
 
 // Initialize variables
 $loginError = '';
@@ -146,7 +142,7 @@ function updateUserPassword($usernameOrEmail, $newPassword, $conn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Login | Capistra</title>
+    <title>Sign in | <?= htmlspecialchars(APP_NAME, ENT_QUOTES, 'UTF-8') ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="protect/css/login.css">
     <style>

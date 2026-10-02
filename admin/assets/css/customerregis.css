@@ -1,0 +1,120 @@
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f9f9f9;
+    margin: 20px;
+    color: #333;
+}
+
+h1, h3 {
+    text-align: center;
+    color: #0056b3;
+}
+
+form {
+    max-width: 900px;
+    margin: auto;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+}
+.fdf {
+    display: flex;
+    align-items: center; /* Vertically align the radio buttons and labels */
+    gap: 15px; /* Add space between the radio buttons */
+}
+
+.fdf label {
+    margin-right: -190px; /* Space between the label and radio buttons */
+}
+
+.fdf input[type="radio"] {
+    margin-right: 5px; /* Space between the radio button and label */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+.ram {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+    gap: 5px; /* Adds space between the radio buttons */
+}
+
+.ram label {
+    margin-right: 5px; /* Space between label and radio buttons */
+}
+
+.ram input[type="radio"] {
+    margin-right: 0px; /* Space between radio button and its label */
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #0056b3;
+}
+
+.row {
+    display: flex;
+    gap: 15px;
+}
+
+.row .col {
+    flex: 1;
+}
+
+
+.form-group-inline input {
+    width: auto;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #007BFF;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 30px;
+    color: #333;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 5px;
+}

@@ -1,12 +1,12 @@
  @echo off
-:: GMIC Auto Backup Script
-:: Called by Windows Task Scheduler
+:: Capistra Auto Backup Script
+:: Called by Windows Task Scheduler. Adjust PROJECT_ROOT for your install.
 
 :: Set paths
 set XAMPP_ROOT=C:\xampp
 set PHP_BIN="%XAMPP_ROOT%\php\php.exe"
-set BACKUP_SCRIPT="%XAMPP_ROOT%\htdocs\gmic\backup.php"
-set LOG_DIR="%XAMPP_ROOT%\htdocs\gmic\backups\logs"
+set BACKUP_SCRIPT="%XAMPP_ROOT%\htdocs\capistra\backup.php"
+set LOG_DIR="%XAMPP_ROOT%\htdocs\capistra\backups\logs"
 
 :: Create log directory if it doesn't exist
 if not exist %LOG_DIR% mkdir %LOG_DIR%

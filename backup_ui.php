@@ -1,24 +1,20 @@
 <?php
+// Capistra - legacy backup manager UI (admin only).
+require_once __DIR__ . '/protect/session_check.php';
+
 // Start output buffering
 ob_start();
 
-// Verify config file exists and is readable
-$configPath = __DIR__ . '/includes/config.ini';
-if (!file_exists($configPath) || !is_readable($configPath)) {
-    die("Error: Configuration file missing or not readable");
-}
-
-// Parse config file
-$config = parse_ini_file($configPath, true);
-if ($config === false) {
-    die("Error: Failed to parse configuration file");
-}
+// Configuration comes from .env via config/app.php; includes/config.ini is an
+// optional override for backup tuning only.
+require_once __DIR__ . '/includes/backup_config.php';
+$config = capistra_backup_config();
 
 // Clean any potential output
 ob_end_clean();
 
 // Set timezone
-date_default_timezone_set($config['backup']['timezone'] ?? 'UTC');
+date_default_timezone_set($config['timezone'] ?? 'UTC');
 
 // List existing backups
 $backupFolder = realpath(__DIR__ . '/backups');
@@ -100,18 +96,8 @@ if (count($backups) > 1) {
                             <span class="nav-link-text">Investment</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="admin/clients/index.php" class="nav-link">
-                            <i class="fas fa-users"></i>
-                            <span class="nav-link-text">Clients Register</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="admin/clients_dis/index.php" class="nav-link">
-                            <i class="fas fa-users"></i>
-                            <span class="nav-link-text">Clients Data</span>
-                        </a>
-                    </li>
+                    <!-- Legacy KYC client registration / credential-vault links removed
+                         from the public build (modules excluded from the repository). -->
                     <li class="nav-item">
                         <a href="backup_ui.php" class="nav-link active">
                             <i class="fas fa-database"></i>

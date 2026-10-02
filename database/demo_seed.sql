@@ -136,6 +136,9 @@ INSERT INTO `equity_details` (`id`, `investor_id`, `equity_percentage`, `share_p
 INSERT INTO `debt_details` (`id`, `investor_id`, `debt_duration`, `interest_rate`, `repayment_schedule`, `collateral`, `total_interest`) VALUES
 (1, 3, '3 years', 9.50, 'Monthly', 'Fictional collateral', 57000.00);
 
+INSERT INTO `profit_sharing_details` (`id`, `investor_id`, `time_range`, `profit_percentage`, `payout_frequency`, `return_method`) VALUES
+(1, 2, 'Annual', 20.00, 'Yearly', 'Bank Transfer');
+
 INSERT INTO `investor_returns` (`id`, `investor_id`, `return_date`, `amount`, `return_type`, `notes`) VALUES
 (1, 1, '2025-06-30', 60000.00, 'dividend',     'Demo annual dividend'),
 (2, 3, '2025-09-30', 15833.00, 'interest',     'Demo quarterly interest'),

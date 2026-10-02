@@ -64,7 +64,6 @@ admin/agreements/
 
 # ---- Legacy company / personal brand assets ------------------------------
 admin/assets/dist/img/director.jpg
-admin/customer/logo.png
 
 # ---- Private database dumps / backups ------------------------------------
 database/gmic.sql

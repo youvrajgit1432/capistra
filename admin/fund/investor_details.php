@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__, 2) . '/protect/session_check.php'; // Capistra auth guard
 include('../head/header.php');
 include('../config/dbcon.php');
 

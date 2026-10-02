@@ -2,7 +2,13 @@
 // Stock-specific validation
 $company_name = sanitizeInput($_POST['company_name']);
 $company_symbol = sanitizeInput($_POST['company_symbol']);
+// The form posts a free-form "investment type"; map it onto the stored enum
+// (`stock_investments.investment_term`). Anything unsupported (e.g. "trading")
+// falls back to the stored default rather than breaking the insert.
 $stock_investment_type = sanitizeInput($_POST['stock_investment_type']);
+if (!in_array($stock_investment_type, ['short_term', 'medium_term', 'long_term'], true)) {
+    $stock_investment_type = 'long_term';
+}
 $stock_base_price = filter_var($_POST['stock_base_price'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 $stock_total_units = filter_var($_POST['stock_total_units'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
@@ -20,7 +26,7 @@ $agreement_pdf = isset($fileUpload['success']) ? $fileUpload['success'] : null;
 
 // Insert into stock_investments table
 $query = "INSERT INTO stock_investments 
-          (investment_id, company_name, company_symbol, investment_type, base_price, total_units, agreement_pdf) 
+          (investment_id, company_name, company_symbol, investment_term, base_price, total_units, agreement_pdf)
           VALUES (?, ?, ?, ?, ?, ?, ?)";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, 'isssdds', $investment_id, $company_name, $company_symbol, 

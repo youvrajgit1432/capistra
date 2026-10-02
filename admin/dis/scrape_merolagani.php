@@ -1,4 +1,6 @@
 <?php
+// Admin-only legacy market-data scrape helper. Experimental / optional.
+require_once dirname(__DIR__, 2) . '/protect/session_check.php'; // Capistra auth guard
 // Set execution time limit and timezone
 set_time_limit(0);
 date_default_timezone_set('Asia/Kathmandu');

@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__, 3) . '/protect/session_check.php'; // Capistra auth guard
 session_start(); // Start the session
 
 // Include Composer autoloader

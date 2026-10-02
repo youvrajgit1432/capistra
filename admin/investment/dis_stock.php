@@ -86,7 +86,7 @@ try {
             'id' => $row['id'],
             'name' => $row['company_name'],
             'symbol' => $row['company_symbol'],
-            'type' => $row['investment_type'],
+            'type' => $row['investment_term'] ?? 'long_term',
             'base_price' => $row['base_price'],
             'units' => $row['total_units'],
             'investment' => $investment,
@@ -222,7 +222,7 @@ try {
                                             </div>
                                             <div>
                                                 <h6 class="mb-0"><?= htmlspecialchars($stock['name']) ?></h6>
-                                                <small class="text-muted"><?= htmlspecialchars($stock['type']) ?></small>
+                                                <small class="text-muted"><?= htmlspecialchars(ucwords(str_replace('_', ' ', $stock['type']))) ?></small>
                                                 <?php if ($stock['source']): ?>
                                                     <small class="d-block text-info"><i class="fas fa-info-circle"></i> <?= $stock['source'] ?></small>
                                                 <?php endif; ?>

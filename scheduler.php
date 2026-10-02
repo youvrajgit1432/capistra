@@ -1,10 +1,18 @@
 <?php
+// Capistra - backup scheduler. This is a long-running CLI service, never a web
+// endpoint: running it over HTTP would block a web worker indefinitely.
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    exit('scheduler.php must be run from the command line: php scheduler.php');
+}
+
 // Set unlimited execution time
 set_time_limit(0);
 
-// Load configuration
-$config = parse_ini_file(__DIR__ . '/config.ini', true);
-date_default_timezone_set($config['backup']['timezone']);
+// Load configuration (canonical .env; includes/config.ini is an optional override).
+require_once __DIR__ . '/includes/backup_config.php';
+$config = capistra_backup_config();
+date_default_timezone_set($config['timezone']);
 
 // Path constants
 define('BACKUP_DIR', __DIR__ . '/backups');
@@ -35,7 +43,7 @@ while (true) {
 
 function shouldRunBackup($config) {
     $lastBackup = getLastBackupTime();
-    $interval = (int)$config['backup']['backup_interval_hours'] * 3600;
+    $interval = (int) $config['backup_interval_hours'] * 3600;
     
     return (time() - $lastBackup) >= $interval;
 }
@@ -61,10 +69,10 @@ function runBackup($config) {
         $output = [];
         $command = sprintf(
             '"%s" --user=%s --password=%s %s > "%s/backup_%s.sql" 2>&1',
-            $config['backup']['mysqldump_path'],
-            $config['database']['user'],
-            $config['database']['password'],
-            $config['database']['name'],
+            $config['mysqldump_path'],
+            $config['user'],
+            $config['password'],
+            $config['name'],
             BACKUP_DIR,
             date('Y-m-d_H-i-s')
         );
@@ -76,7 +84,7 @@ function runBackup($config) {
         }
         
         logSuccess('Backup completed successfully');
-        cleanupOldBackups($config['backup']['max_files']);
+        cleanupOldBackups($config['max_files']);
     } finally {
         // Always remove lock file
         if (file_exists(LOCK_FILE)) {

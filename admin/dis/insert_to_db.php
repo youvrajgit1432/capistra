@@ -1,4 +1,6 @@
 <?php
+// Admin-only legacy market-data import. Experimental / optional.
+require_once dirname(__DIR__, 2) . '/protect/session_check.php'; // Capistra auth guard
 include 'scrape_merolagani.php'; // Assumes $data[] is populated
 
 // Central Capistra database bootstrap (no hard-coded credentials).

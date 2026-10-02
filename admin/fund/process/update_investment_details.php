@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__, 3) . '/protect/session_check.php'; // Capistra auth guard
 include('../../config/dbcon.php'); // Include database connection
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -326,6 +326,20 @@ CREATE TABLE `debt_details` (
     REFERENCES `investors` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `profit_sharing_details` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `investor_id` int(11) NOT NULL,
+  `time_range` varchar(50) NOT NULL,
+  `profit_percentage` decimal(5,2) NOT NULL DEFAULT 0,
+  `payout_frequency` enum('Monthly','Quarterly','Yearly') NOT NULL DEFAULT 'Monthly',
+  `return_method` enum('Bank Transfer','Digital Wallet','Reinvestment') NOT NULL DEFAULT 'Bank Transfer',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_profit_sharing_investor` (`investor_id`),
+  CONSTRAINT `fk_profit_sharing_details_investor` FOREIGN KEY (`investor_id`)
+    REFERENCES `investors` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `investor_returns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `investor_id` int(11) NOT NULL,

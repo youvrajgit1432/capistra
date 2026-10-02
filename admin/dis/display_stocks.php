@@ -1,5 +1,7 @@
 <?php
 // display_stocks.php
+// Admin-only legacy market-data viewer. Experimental / optional.
+require_once dirname(__DIR__, 2) . '/protect/session_check.php'; // Capistra auth guard
 // Central Capistra database bootstrap (no hard-coded credentials).
 require_once dirname(__DIR__, 2) . '/config/app.php';
 $conn = capistra_mysqli();

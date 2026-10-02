@@ -1,19 +1,26 @@
  <?php
-     require_once('protect/session_check.php');
-// Load configuration
-$config = parse_ini_file(__DIR__ . '/includes/config.ini', true);
-date_default_timezone_set($config['backup']['timezone']);
+// Browser requests must be authenticated; scheduled runs (Task Scheduler / the
+// Windows service) execute this script through the PHP CLI and have no session.
+if (PHP_SAPI !== 'cli') {
+    require_once __DIR__ . '/protect/session_check.php';
+}
+require_once __DIR__ . '/includes/backup_config.php';
+
+// Configuration comes from .env via config/app.php; includes/config.ini is an
+// optional override for backup tuning only (never for credentials).
+$config = capistra_backup_config();
+date_default_timezone_set($config['timezone']);
 
 // Database credentials
-$dbUser = trim($config['database']['user'], '"');
-$dbPass = trim($config['database']['password'], '"');
-$dbName = trim($config['database']['name'], '"');
+$dbUser = $config['user'];
+$dbPass = $config['password'];
+$dbName = $config['name'];
 
 // Backup settings
 $backupFolder = realpath(__DIR__ . '/backups') ?: __DIR__ . '/backups';
 $filename = "capistra_backup_" . date('Y-m-d_H-i-s') . ".sql";
 $filepath = $backupFolder . DIRECTORY_SEPARATOR . $filename;
-$maxFiles = (int)$config['backup']['max_files'];
+$maxFiles = (int) $config['max_files'];
 
 // Ensure directories exist
 if (!file_exists($backupFolder)) {
@@ -24,7 +31,7 @@ if (!file_exists($backupFolder . '/logs')) {
 }
 
 // Find mysqldump
-$mysqldumpPath = $config['backup']['mysqldump_path'];
+$mysqldumpPath = $config['mysqldump_path'];
 if (!file_exists($mysqldumpPath)) {
     $mysqldumpPath = 'mysqldump'; // Fallback to system PATH
 }

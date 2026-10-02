@@ -144,22 +144,9 @@ if ($profileImage) {
         </p>
     </a>
 </li>
-<li class="nav-item">
-    <a href="../clients/index.php" class="nav-link">
-    <i class="nav-icon fas fa-users"></i>
-        <p>
-          Clients Register
-        </p>
-    </a>
-</li>
-<li class="nav-item">
-    <a href="../clients_dis/index.php" class="nav-link">
-    <i class="nav-icon fas fa-users"></i>
-        <p>
-          Clients Data
-        </p>
-    </a>
-</li>
+<!-- Legacy KYC client registration / credential-vault links removed from the
+     public build: those modules are not part of Capistra and are excluded from
+     the repository. -->
 
 <li class="nav-item">
     <a href="../investment/index.php" class="nav-link">

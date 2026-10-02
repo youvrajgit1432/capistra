@@ -310,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Sidebar Navigation -->
             <div class="col-md-3 col-lg-2 d-md-block sidebar">
                 <div class="logo">
-                    <h4><i class="fas fa-chart-line"></i> Global Tech</h4>
+                    <h4><i class="fas fa-chart-line"></i> Capistra</h4>
                 </div>
                 
           

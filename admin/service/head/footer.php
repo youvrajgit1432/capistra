@@ -1,5 +1,5 @@
 <footer class="main-footer">
-    <strong>Copyright &copy; 2024 <a href="https://globalmoney.free.nf">Capistra</a>.</strong>
+    <strong>Copyright &copy; 2024 Capistra.</strong>
     All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
       <b>Version</b> 1.0.0
@@ -45,8 +45,6 @@
 <script src="../../assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../../assets/dist/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="../../assets/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="../../assets/dist/js/pages/dashboard.js"></script>
 </body>

@@ -61,7 +61,7 @@
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
       <img src="../assets/dist/img/middlelogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">Global tech</span>
+      <span class="brand-text font-weight-light">Capistra</span>
     </a>
 
     <!-- Sidebar -->

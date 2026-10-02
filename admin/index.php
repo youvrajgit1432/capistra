@@ -4,7 +4,7 @@
 // Handle PDF Export
 if (isset($_GET['export_pdf'])) {
     // Include Composer autoloader
-    require __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../config/autoload.php';
 
     // Include DB connection
     include('config/dbcon.php');

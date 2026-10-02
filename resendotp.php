@@ -19,7 +19,7 @@ if (isset($_SESSION['last_otp_time']) && (time() - $_SESSION['last_otp_time'] < 
 }
 
 // Include PHPMailer
-require 'vendor/autoload.php';
+require_once __DIR__ . '/config/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 

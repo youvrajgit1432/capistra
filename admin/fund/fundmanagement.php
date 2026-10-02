@@ -358,8 +358,8 @@ $grossProfitThisYear = $totalIncomeThisYear;
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align: right;"><strong>Profit/Loss</strong></td>
-                            <td colspan="2" class="<?php echo $profitLossColor; ?>">
-                                <strong><?php echo $profitLoss; ?></strong>
+                            <td colspan="2" class="<?php echo $profitLossColor ?? 'text-green'; ?>">
+                                <strong><?php echo $profitLoss ?? 0; ?></strong>
                             </td>
                         </tr>
                     </tfoot>

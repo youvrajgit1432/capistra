@@ -2,7 +2,7 @@
  require_once('../../protect/session_check.php');
 
 // Inclsession_start(); // Start the sessionude Composer autoloader
-require __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../config/autoload.php';
 
 // Include DB connection
 include('../config/dbcon.php');

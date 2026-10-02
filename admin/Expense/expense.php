@@ -2,7 +2,7 @@
   require_once('../../protect/session_check.php');
 
 // Include Composer autoloader
-require __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../config/autoload.php';
 
 // Handle PDF Export
 if (isset($_GET['export_pdf'])) {
@@ -558,7 +558,7 @@ if (isset($_POST['add_expense'])) {
         </label>
         <input type="file" class="form-control form-control-sm" name="bill_file" accept="image/*,application/pdf">
         <small class="form-text text-muted">
-            Current file: <a href="uploads/<?php echo $expense['bill_file']; ?>" target="_blank">View File</a>
+            <?php if (!empty($expense['bill_file'])): ?>Current file: <a href="uploads/<?php echo htmlspecialchars((string) $expense['bill_file']); ?>" target="_blank">View File</a><?php else: ?><span>No existing file.</span><?php endif; ?>
         </small>
     </div>
     <div class="mb-4">

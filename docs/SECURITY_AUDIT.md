@@ -16,13 +16,13 @@ it, and which credentials must be treated as compromised.
 | 4 | `admin/clients/config/config.php`, `admin/clients_dis/config/config.php` | Hardcoded MySQL credentials | **REPLACE** — rewritten to the canonical bootstrap (tree excluded from public repo). |
 | 5 | `admin/reg/config/database.php`, `admin/admin/admin_data.php` | Hardcoded MySQL credentials (PDO) | **REPLACE** — rewritten. |
 | 6 | `admin/investment/config.php` | Hardcoded MySQL credentials | **REPLACE** — rewritten to the canonical bootstrap. |
-| 7 | `admin/t.php`, `admin/customer/formhandle.php`, `admin/customer/tablecreate.php`, `admin/dis/*.php` | Hardcoded MySQL credentials | **REPLACE** — migrate to `config/app.php` (see remaining work below). |
+| 7 | `admin/t.php`, `admin/customer/formhandle.php`, `admin/customer/tablecreate.php`, `admin/dis/*.php` | Hardcoded MySQL credentials | **RESOLVED** — `admin/t.php` and the `admin/customer/*` scripts were removed; `admin/dis/*` now use the canonical bootstrap and require an admin session. See [`LEGACY_AUDIT.md`](LEGACY_AUDIT.md). |
 | 8 | `admin/clients_dis/config/encryption.php` | Application encryption key | **DELETE + ROTATE** — the key protected encrypted third-party credentials. Removed from the public tree. Any data encrypted with it must be considered compromised. |
 | 9 | Original dump: `gmail_accounts.encrypted_password` | Encrypted Gmail passwords | **DELETE + ROTATION REQUIRED** — third-party email passwords were stored. Rotate all such passwords; do not restore. |
 | 10 | Original dump: `internet_banking.encrypted_password`, `..._security_answer1/2` | Encrypted bank logins + security answers | **DELETE + ROTATION REQUIRED** — rotate internet-banking credentials and security answers. |
 | 11 | Original dump: `adult_registrations.meroshare_password`, `minor_registrations.meroshare_password`, `tp_mero` | Broker / Meroshare / TMS passwords | **DELETE + ROTATION REQUIRED** — rotate Meroshare/TMS credentials. |
 | 12 | Original dump: `adminusers.password` (bcrypt) | Real administrator password hashes | **ROTATE** — treat as compromised; the public build ships only the fictional `demo_admin`. |
-| 13 | `scheduler.php`, `scripts/*.bat`, `backup.php`, `backup_ui.php` | Path / configuration (no secret literal found) | **REVIEW** — ensure no credentials are read from removed config. |
+| 13 | `scheduler.php`, `scripts/*.bat`, `backup.php`, `backup_ui.php` | Path / configuration (no secret literal found) | **RESOLVED** — backup scripts now read the canonical `.env` via `includes/backup_config.php`; the local `includes/config.ini` is an optional override. `delete_backup.php` no longer echoes the INI file, and `scheduler.php` is CLI-only. |
 | 14 | Mail / SMTP | No credential literal found in the tracked source | **N/A** — placeholders live in `.env.example`. |
 
 ### Scan results
@@ -42,6 +42,11 @@ The original schema stored third-party logins. In the public design these are
 
 **Never stored:** bank login password, email password, recovery password,
 security question answers, OTP secrets, TMS/Meroshare password.
+
+> The legacy KYC onboarding routes that collected citizenship / bank / DEMAT
+> data (`admin/customer/*`) were **removed from the public build**, and the
+> investor/fund and market-data routes were placed behind the session guard —
+> see [`LEGACY_AUDIT.md`](LEGACY_AUDIT.md).
 
 ## 3. KYC / registration data
 

@@ -5,7 +5,10 @@ this upgrade), **MIGRATED** (rewired to the canonical config/session),
 **EXCLUDED** (kept out of the public repository — private/KYC/credential),
 **REVIEW** (still needs work; see notes).
 
-The project contains ~184 active PHP files. This audit covers every top-level
+> Routes were re-audited for the public release in [`LEGACY_AUDIT.md`](LEGACY_AUDIT.md),
+> which records what was removed or guarded and why.
+
+The project contains ~165 tracked PHP files. This audit covers every top-level
 area plus the new accounting module; it is a structural audit, not a claim that
 each legacy page was individually browser-tested (see "Remaining work").
 
@@ -44,9 +47,9 @@ each legacy page was individually browser-tested (see "Remaining work").
 | Investor/Fund | `/admin/fund/*` | Yes | `investors`, `equity_details`, `debt_details`, `investor_returns` | MIGRATED | Investor create uses simplified fields |
 | Billing | `/admin/billing/*` | Yes | (billing tables) | REVIEW | Company info now configurable via `app_settings` |
 | Employees | `/admin/employee/*` | Yes | `employees` | MIGRATED | Sensitive fields optional |
-| Customers | `/admin/customer/*` | Yes | `customers` | MIGRATED | Simplified model |
+| Customers | — | — | `customers` | REMOVED | Legacy KYC onboarding removed from the public build; the `customers` table remains for billing/accounting |
 | Reports | `/admin/*` PDF/CSV exports | Yes | many | REVIEW | Some templates still contain old branding |
-| Backup | `/backup.php`, `/backup_ui.php`, `/scheduler.php` | Yes | config.ini | MIGRATED | `config.ini` git-ignored |
+| Backup | `/backup.php`, `/backup_ui.php` | Yes | `.env` via `includes/backup_config.php` | MIGRATED | `scheduler.php` is **CLI-only**; `includes/config.ini` is an optional override |
 
 ## Excluded from the public repository
 
@@ -55,6 +58,7 @@ each legacy page was individually browser-tested (see "Remaining work").
 | KYC clients | `admin/clients/` | Citizenship/KYC data |
 | KYC registration | `admin/clients_dis/` | KYC + credential vault + uploads |
 | KYC root | `clients-dis/` | KYC uploads |
+| Legacy customer onboarding | `admin/customer/` | Removed entirely (KYC form, handlers, dev scripts) |
 | Registration area | `admin/reg/` | Registration/KYC flow |
 | Agreements | `admin/agreements/` | Private agreements |
 | All uploads | `**/uploads/`, `**/profile_images/`, `**/employee_photos/` | Private documents/photos |
@@ -64,12 +68,16 @@ each legacy page was individually browser-tested (see "Remaining work").
 
 These items are **not yet complete** and are tracked so the audit is honest:
 
-1. Rewire the remaining inline DB connections (`admin/customer/formhelpers`,
-   `admin/dis/*`, `admin/Expense/t.php`, `admin/t.php`) to `config/app.php`.
-2. Consolidate the duplicated OTP senders to a single hardened implementation.
-3. Point Income/Expense create/edit at `ledger_post_entry()` for automatic
+1. Consolidate the duplicated OTP senders to a single hardened implementation.
+2. Point Income/Expense create/edit at `ledger_post_entry()` for automatic
    journal posting (the engine and accounts are ready).
-4. Replace remaining legacy branding strings in PDF/report templates with
+3. Replace remaining legacy branding strings in PDF/report templates with
    `APP_NAME`.
-5. Remove remaining dead dev files (`iiiindex.php`, `admin/Expense/t.php`,
-   `admin/t.php`, `admin/config/table.php`) after removing inbound links.
+4. Consolidate the two login paths (`index.php` inline handler vs
+   `protect/login_process.php`).
+
+Done in this pass (formerly listed here): the inline connections in
+`admin/customer/*`, `admin/dis/*`, `admin/Expense/t.php` and `admin/t.php` were
+resolved by guarding or removing those routes — see
+[`LEGACY_AUDIT.md`](LEGACY_AUDIT.md). `iiiindex.php` is retained: it is a factual
+public landing page.

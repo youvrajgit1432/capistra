@@ -48,7 +48,9 @@ jobs:
       - name: Guard against committed secrets/data
         run: |
           set -e
-          if git ls-files | grep -E '(^|/)\.env$|config\.ini$|\.sql$' | grep -vE 'database/(schema|demo_seed)\.sql$'; then
+          # Allow the public database package only: schema, demo seed, migrations.
+          if git ls-files | grep -E '(^|/)\.env$|config\.ini$|\.sql$' \
+              | grep -vE 'database/(schema|demo_seed)\.sql$|database/migrations/.+\.sql$'; then
             echo "::error::A private/secret file appears to be tracked."
             exit 1
           fi
